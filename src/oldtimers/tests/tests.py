@@ -1,11 +1,10 @@
 import random
 import string
-from decimal import getcontext
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from oldtimers.models import Offer, Retailer, Vehicle
+from oldtimers.models import DeliveryService, Offer, Retailer, Vehicle
 
 
 def sample_retailer(id, company_name, **params):
@@ -17,20 +16,14 @@ def sample_retailer(id, company_name, **params):
         "city": "LONDON",
     }
     defaults.update(params)
-    test_retailer = Retailer.objects.create(id=2, company_name=company_name, **defaults)
+    test_retailer = Retailer.objects.create(id=id, company_name=company_name, **defaults)
     return test_retailer
 
 
 def sample_vehicle(retailer_id, **params):
     defaults = {
         "vin": f"{''.join(random.choices(string.ascii_uppercase + string.digits, k=17))}",
-        "category": "2",
-        "brand": "Porsche",
-        "model": "911",
-        "production_year": "1988",
-        "condition": "3",
         "price": "20000.00",
-        "description": "good",
     }
 
     defaults.update(params)
@@ -43,14 +36,16 @@ def sample_offer(retailer_id, vehicle_id):
     return test_offer
 
 
+def sample_delivery_service(company_name):
+    defaults = {"zip_code": "00001"}
+    return DeliveryService.objects.create(company_name=company_name, **defaults)
+
+
 class TestRetailerModel(TestCase):
     def setUp(self) -> None:
         defaults = {
             "id": 1,
             "email": "default@deafult.com",
-            "zip_code": "00000",
-            "mobile": "+35623152258",
-            "country": "GB",
             "service_fee": "1.30",
         }
         self.default_retailer = Retailer.objects.create(company_name="test_company", **defaults)
@@ -65,13 +60,19 @@ class TestRetailerModel(TestCase):
     def test_vehicles_count_normal_case(self):
         self.assertEqual(self.vehicles_count, self.test_retailer.vehicles_count())
 
-    # def test_negative_service_fee(self):
-    #     self.test_retailer.service_fee = -1.0
-    #     with self.assertRaises(ValidationError):
-    #         Retailer.objects.create(id=5, company_name="test", service_fee=-1.0)
+    def test_negative_service_fee(self):
+        self.test_retailer.service_fee = -1.0
+        with self.assertRaises(ValidationError):
+            Retailer.objects.create(id=5, company_name="test", service_fee=-1.0)
 
 
-class TestVehicleModel(TestRetailerModel):
+class TestVehicleModel(TestCase):
+    def setUp(self) -> None:
+        self.test_retailer = sample_retailer(id=2, company_name="BravoMotors")
+
+    def tearDown(self) -> None:
+        self.test_retailer.delete()
+
     def test_year_of_manufacture_limit(self):
         with self.assertRaises(ValidationError):
             sample_vehicle(retailer_id=2, production_year=1899)
@@ -108,9 +109,15 @@ class TestOfferModel(TestCase):
         self.default_retailer.delete()
 
     def test_offer_price(self):
-        c = getcontext()
+        self.assertEqual(self.test_offer.offer_price(), 26000.00)
 
-        c.prec = 3
-        print(c)
-        print(self.test_offer.vehicle.price, self.test_retailer)
-        self.assertEqual(str(self.test_offer.offer_price()), "26000.00")
+
+class TestDeliveryServiceModel(TestCase):
+    def setUp(self) -> None:
+        self.test_delivery_service = sample_delivery_service("TestDelivery")
+
+    def tearDown(self) -> None:
+        self.test_delivery_service.delete()
+
+    def test_if_international_delivery(self):
+        self.assertFalse(self.test_delivery_service.international_delivery)

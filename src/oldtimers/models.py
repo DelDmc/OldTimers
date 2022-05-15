@@ -1,5 +1,5 @@
 import uuid as uuid
-from decimal import *
+from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -58,7 +58,7 @@ class Vehicle(BaseModel):
         choices=VEHICLE_CATEGORY_CHOICES.choices,
         default=VEHICLE_CATEGORY_CHOICES.OTHER,
         null=False,
-        blank=False,
+        blank=True,
     )
     brand = models.CharField(
         max_length=50,
@@ -89,7 +89,7 @@ class Vehicle(BaseModel):
         blank=True,
     )
     price = models.DecimalField(
-        max_digits=19, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(Decimal(1.00))]
+        max_digits=19, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(1.00)]
     )
     description = models.TextField(
         max_length=500,
@@ -125,7 +125,7 @@ class Retailer(BaseModel):
         null=False,
         blank=True,
         default=1.00,
-        validators=[MinValueValidator(Decimal(1.00))],
+        validators=[MinValueValidator(1.00)],
     )
 
     def __str__(self):
@@ -135,7 +135,7 @@ class Retailer(BaseModel):
         return self.vehicles.count()
 
     def save(self, *args, **kwargs):
-        self.clean_fields()
+        self.full_clean()
         return super().save(*args, **kwargs)
 
 
@@ -148,8 +148,7 @@ class Offer(BaseModel):
     )
 
     def offer_price(self):
-        getcontext().prec = 3
-        self.offer_price = (self.vehicle.price * self.retailer.service_fee)
+        self.offer_price = Decimal(float(self.vehicle.price) * float(self.retailer.service_fee))
         return self.offer_price
 
     def __str__(self):
