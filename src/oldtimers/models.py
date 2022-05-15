@@ -1,4 +1,5 @@
 import uuid as uuid
+from decimal import *
 
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -8,7 +9,15 @@ from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-class Vehicle(models.Model):
+class BaseModel(models.Model):
+    class Meta:
+        abstract = True
+
+    create_datetime = models.DateTimeField(null=True, auto_now_add=True)
+    last_update = models.DateTimeField(null=True, auto_now=True)
+
+
+class Vehicle(BaseModel):
     YEAR_OF_PRODUCTION_MIN_YEAR = 1900
     YEAR_OF_PRODUCTION_MAX_YEAR = 2000
 
@@ -32,20 +41,19 @@ class Vehicle(models.Model):
     owner = models.ForeignKey(
         get_user_model(),
         related_name="vehicle",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     retailer = models.ForeignKey(
         to="oldtimers.Retailer",
-        related_name="vehicle",
-        on_delete=models.CASCADE
+        related_name="vehicles",
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        blank=True,
+        default=1,
     )
-    vin = models.CharField(
-        null=False,
-        blank=False,
-        unique=True,
-        max_length=17,
-        primary_key=True
-    )
+    vin = models.CharField(null=False, blank=False, unique=True, max_length=17, primary_key=True, db_index=True)
     category = models.PositiveSmallIntegerField(
         choices=VEHICLE_CATEGORY_CHOICES.choices,
         default=VEHICLE_CATEGORY_CHOICES.OTHER,
@@ -54,110 +62,113 @@ class Vehicle(models.Model):
     )
     brand = models.CharField(
         max_length=50,
-        blank=False,
         null=False,
+        blank=True,
     )
     model = models.CharField(
         max_length=50,
-        blank=False,
         null=False,
+        blank=True,
     )
-    production_year = models.IntegerField(
+    production_year = models.PositiveSmallIntegerField(
         _("year"),
-        validators=[
-            MaxValueValidator(YEAR_OF_PRODUCTION_MAX_YEAR),
-            MinValueValidator(YEAR_OF_PRODUCTION_MIN_YEAR)
-        ],
+        null=True,
+        blank=True,
+        validators=[MaxValueValidator(YEAR_OF_PRODUCTION_MAX_YEAR), MinValueValidator(YEAR_OF_PRODUCTION_MIN_YEAR)],
     )
     condition = models.PositiveSmallIntegerField(
         choices=VEHICLE_CONDITION_CHOICES.choices,
-        default=VEHICLE_CONDITION_CHOICES.OTHER
+        default=VEHICLE_CONDITION_CHOICES.OTHER,
+        null=True,
+        blank=True,
     )
     image = models.ImageField(
         default="default.png",
-        upload_to="media/vehicle"
+        upload_to="media/vehicle",
+        null=True,
+        blank=True,
     )
     price = models.DecimalField(
-        max_digits=19,
-        decimal_places=2,
-        null=False,
-        blank=False,
+        max_digits=19, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(Decimal(1.00))]
     )
     description = models.TextField(
         max_length=500,
         null=False,
-        blank=False,
+        blank=True,
     )
 
+    def __str__(self):
+        return (
+            f"{self.retailer.company_name} "
+            f"{self.brand} {self.model}"
+            f" {self.vin} {self.description} "
+            f"Price: {self.price} $ "
+        )
 
-class Retailer(models.Model):
-    uuid = models.UUIDField(
-        default=uuid.uuid4,
-        db_index=True,
-        unique=True
-    )
-    company_name = models.CharField(
-        max_length=50,
-        blank=False,
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+
+class Retailer(BaseModel):
+    uuid = models.UUIDField(default=uuid.uuid4, db_index=True, unique=True)
+    company_name = models.CharField(max_length=50, blank=True, null=False)
+    mobile = PhoneNumberField(blank=True, null=False)
+    email = models.EmailField(max_length=128)
+    address = models.CharField(_("address"), max_length=128, null=False, blank=True)
+    city = models.CharField(_("city"), max_length=64, blank=True, null=False)
+    country = CountryField(blank=True, null=False)
+    zip_code = models.CharField(_("zip code"), max_length=5, blank=True, null=False)
+    service_fee = models.DecimalField(
+        max_digits=19,
+        decimal_places=2,
         null=False,
-        unique=True
-    )
-    mobile = PhoneNumberField(
-        blank=False,
-        null=False,
-        unique=True
-    )
-    email = models.EmailField(
-        max_length=128
-    )
-    address = models.CharField(
-        _("address"),
-        max_length=128
-    )
-    city = models.CharField(
-        _("city"),
-        max_length=64,
-    )
-    country = CountryField(
-        blank=False,
-        null=False
-    )
-    zip_code = models.CharField(
-        _("zip code"),
-        max_length=5
+        blank=True,
+        default=1.00,
+        validators=[MinValueValidator(Decimal(1.00))],
     )
 
+    def __str__(self):
+        return f"{self.company_name} Id: {self.id}  Service fee: {self.service_fee} "
 
-class Offer(models.Model):
-    retailer = models.ForeignKey(
-        to="oldtimers.Retailer",
-        related_name="offers",
-        on_delete=models.CASCADE
-    )
-    vehicle_id = models.OneToOneField(
+    def vehicles_count(self):
+        return self.vehicles.count()
+
+    def save(self, *args, **kwargs):
+        self.clean_fields()
+        return super().save(*args, **kwargs)
+
+
+class Offer(BaseModel):
+    retailer = models.ForeignKey(to="oldtimers.Retailer", related_name="offers", on_delete=models.CASCADE)
+    vehicle = models.OneToOneField(
         to="oldtimers.Vehicle",
         related_name="offers",
         on_delete=models.CASCADE,
     )
-    offer_price = models.DecimalField(
-        max_digits=19,
-        decimal_places=2,
-        null=False,
-        blank=False,
-    )
+
+    def offer_price(self):
+        getcontext().prec = 3
+        self.offer_price = (self.vehicle.price * self.retailer.service_fee)
+        return self.offer_price
+
+    def __str__(self):
+        return (
+            f"\n Date: {self.create_datetime} \n Seller: {self.retailer.company_name} "
+            f"({self.retailer.country}) "
+            f"\n Model: {self.vehicle.brand} {self.vehicle.model}"
+            f"\n Description: {self.vehicle.description}"
+            f"\n Buy now offer: {self.offer_price}"
+        )
 
 
-class Employee(models.Model):
+class Employee(BaseModel):
     class EMPLOYEE_RANK_CHOICES(models.IntegerChoices):
         CEO = 0, "Chief Executive Officer"
         GENERAL_MANAGER = 1, "General Manager / Administrator"
         SALES_MANAGER = 2, "Sales Manager"
 
-    retailer = models.ForeignKey(
-        to="oldtimers.Retailer",
-        related_name="employees",
-        on_delete=models.CASCADE
-    )
+    retailer = models.ForeignKey(to="oldtimers.Retailer", related_name="employees", on_delete=models.CASCADE)
     uuid = models.UUIDField(
         primary_key=True,
         unique=True,
@@ -167,61 +178,47 @@ class Employee(models.Model):
     first_name = models.CharField(
         max_length=128,
         null=False,
-        blank=False,
+        blank=True,
     )
     last_name = models.CharField(
         max_length=128,
         null=False,
-        blank=False,
+        blank=True,
     )
     rank = models.PositiveSmallIntegerField(
-        choices=EMPLOYEE_RANK_CHOICES.choices,
-        default=EMPLOYEE_RANK_CHOICES.SALES_MANAGER
+        choices=EMPLOYEE_RANK_CHOICES.choices, default=EMPLOYEE_RANK_CHOICES.SALES_MANAGER
     )
     email = models.EmailField(
         max_length=128,
         null=False,
-        blank=False,
+        blank=True,
     )
 
 
-class DeliveryService(models.Model):
-    uuid = models.UUIDField(
-        default=uuid.uuid4,
-        db_index=True,
-        unique=True
-    )
-    company_name = models.CharField(
-        max_length=50,
-        null=False,
-        blank=False,
-        unique=True
-    )
-    mobile = PhoneNumberField(
-        null=False,
-        blank=False,
-        unique=True
-    )
+class DeliveryService(BaseModel):
+    uuid = models.UUIDField(default=uuid.uuid4, db_index=True, unique=True)
+    company_name = models.CharField(max_length=50, null=False, blank=True)
+    mobile = PhoneNumberField(null=False, blank=True)
     email = models.EmailField(
         max_length=128,
         null=False,
-        blank=False,
+        blank=True,
     )
     address = models.CharField(
         _("address"),
         max_length=128,
         null=False,
-        blank=False,
+        blank=True,
     )
     city = models.CharField(
         _("city"),
         max_length=64,
         null=False,
-        blank=False,
+        blank=True,
     )
     country = CountryField(
         null=False,
-        blank=False,
+        blank=True,
     )
     zip_code = models.CharField(
         _("zip code"),
@@ -229,28 +226,24 @@ class DeliveryService(models.Model):
         null=False,
         blank=False,
     )
-    international_delivery = models.BooleanField(
-        default=False
-    )
+    international_delivery = models.BooleanField(default=False)
 
 
-class Invoices(models.Model):
+class Invoices(BaseModel):
     invoice_date = models.DateTimeField(
         null=False,
         blank=False,
     )
-    billing_address = models.CharField(
-        _("address"),
-        max_length=128,
-        default="N/A"
-    )
+    billing_address = models.CharField(_("address"), max_length=128, default="N/A")
     billing_city = models.CharField(
         _("city"),
         max_length=64,
+        blank=True,
+        null=False,
     )
     billing_country = CountryField(
         null=False,
-        blank=False,
+        blank=True,
     )
     billing_zip_code = models.CharField(
         _("zip code"),
@@ -266,12 +259,8 @@ class Invoices(models.Model):
     )
 
 
-class InvoiceItems(models.Model):
-    vehicle = models.ForeignKey(
-        to="oldtimers.Vehicle",
-        related_name="invoice_items_vehicle",
-        on_delete=models.CASCADE
-    )
+class InvoiceItems(BaseModel):
+    vehicle = models.ForeignKey(to="oldtimers.Vehicle", related_name="invoice_items_vehicle", on_delete=models.CASCADE)
     delivery_service_id = models.ForeignKey(
         to="oldtimers.DeliveryService",
         related_name="invoice_items",
@@ -286,12 +275,7 @@ class InvoiceItems(models.Model):
         null=False,
         blank=False,
     )
-    invoice_line_id = models.IntegerField(
-        primary_key=True,
-        blank=False,
-        db_index=True,
-        default="N/A"
-    )
+    invoice_line_id = models.IntegerField(primary_key=True, blank=False, db_index=True, default="N/A")
     price = models.ForeignKey(
         to="oldtimers.Vehicle",
         related_name="invoice_items_price",
@@ -299,18 +283,15 @@ class InvoiceItems(models.Model):
         null=False,
         blank=False,
     )
-    delivery_charge = models.DecimalField(
+    delivery_fee = models.DecimalField(
         max_digits=19,
         decimal_places=2,
         null=False,
         blank=False,
     )
-    insurance_charge = models.DecimalField(
+    insurance_fee = models.DecimalField(
         max_digits=19,
         decimal_places=2,
         null=False,
         blank=False,
     )
-
-
-
