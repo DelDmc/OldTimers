@@ -2,6 +2,7 @@ import uuid as uuid
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import gettext as _
@@ -17,9 +18,39 @@ class BaseModel(models.Model):
     last_update = models.DateTimeField(null=True, auto_now=True)
 
 
+class Retailer(BaseModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="retailer", null=False)
+    uuid = models.UUIDField(default=uuid.uuid4, db_index=True, unique=True)
+    company_name = models.CharField(max_length=50, blank=True, null=False)
+    phone_number = PhoneNumberField(blank=True, null=False)
+    email = models.EmailField(max_length=128)
+    address = models.CharField(_("address"), max_length=128, null=False, blank=True)
+    city = models.CharField(_("city"), max_length=64, blank=True, null=False)
+    country = CountryField(blank=True, null=False)
+    zip_code = models.CharField(_("zip code"), max_length=5, blank=True, null=False)
+    service_fee = models.DecimalField(
+        max_digits=19,
+        decimal_places=2,
+        null=False,
+        blank=True,
+        default=1.00,
+        validators=[MinValueValidator(1.00)],
+    )
+
+    def __str__(self):
+        return f"{self.company_name} Id: {self.id}  Service fee: {self.service_fee} {self.vehicle.model}"
+
+    def vehicles_count(self):
+        return self.vehicles.count()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+
 class Vehicle(BaseModel):
-    YEAR_OF_PRODUCTION_MIN_YEAR = 1900
-    YEAR_OF_PRODUCTION_MAX_YEAR = 2000
+    YEAR_OF_PRODUCTION_MIN = 1900
+    YEAR_OF_PRODUCTION_MAX = 2000
 
     class VEHICLE_CATEGORY_CHOICES(models.IntegerChoices):
         LUXURY = 0, "Lux Class"
@@ -46,7 +77,7 @@ class Vehicle(BaseModel):
         blank=True,
     )
     retailer = models.ForeignKey(
-        to="oldtimers.Retailer",
+        Retailer,
         related_name="vehicles",
         on_delete=models.SET_DEFAULT,
         null=True,
@@ -74,7 +105,7 @@ class Vehicle(BaseModel):
         _("year"),
         null=True,
         blank=True,
-        validators=[MaxValueValidator(YEAR_OF_PRODUCTION_MAX_YEAR), MinValueValidator(YEAR_OF_PRODUCTION_MIN_YEAR)],
+        validators=[MaxValueValidator(YEAR_OF_PRODUCTION_MAX), MinValueValidator(YEAR_OF_PRODUCTION_MIN)],
     )
     condition = models.PositiveSmallIntegerField(
         choices=VEHICLE_CONDITION_CHOICES.choices,
@@ -110,35 +141,6 @@ class Vehicle(BaseModel):
         return super().save(*args, **kwargs)
 
 
-class Retailer(BaseModel):
-    uuid = models.UUIDField(default=uuid.uuid4, db_index=True, unique=True)
-    company_name = models.CharField(max_length=50, blank=True, null=False)
-    mobile = PhoneNumberField(blank=True, null=False)
-    email = models.EmailField(max_length=128)
-    address = models.CharField(_("address"), max_length=128, null=False, blank=True)
-    city = models.CharField(_("city"), max_length=64, blank=True, null=False)
-    country = CountryField(blank=True, null=False)
-    zip_code = models.CharField(_("zip code"), max_length=5, blank=True, null=False)
-    service_fee = models.DecimalField(
-        max_digits=19,
-        decimal_places=2,
-        null=False,
-        blank=True,
-        default=1.00,
-        validators=[MinValueValidator(1.00)],
-    )
-
-    def __str__(self):
-        return f"{self.company_name} Id: {self.id}  Service fee: {self.service_fee} "
-
-    def vehicles_count(self):
-        return self.vehicles.count()
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super().save(*args, **kwargs)
-
-
 class Offer(BaseModel):
     retailer = models.ForeignKey(to="oldtimers.Retailer", related_name="offers", on_delete=models.CASCADE)
     vehicle = models.OneToOneField(
@@ -167,6 +169,7 @@ class Employee(BaseModel):
         GENERAL_MANAGER = 1, "General Manager / Administrator"
         SALES_MANAGER = 2, "Sales Manager"
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="employee")
     retailer = models.ForeignKey(to="oldtimers.Retailer", related_name="employees", on_delete=models.CASCADE)
     uuid = models.UUIDField(
         primary_key=True,
@@ -197,7 +200,7 @@ class Employee(BaseModel):
 class DeliveryService(BaseModel):
     uuid = models.UUIDField(default=uuid.uuid4, db_index=True, unique=True)
     company_name = models.CharField(max_length=50, null=False, blank=True)
-    mobile = PhoneNumberField(null=False, blank=True)
+    phone_number = PhoneNumberField(null=False, blank=True)
     email = models.EmailField(
         max_length=128,
         null=False,
