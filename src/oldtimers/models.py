@@ -9,6 +9,8 @@ from django.utils.translation import gettext as _
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 
+from accounts.models import Customer
+
 
 class BaseModel(models.Model):
     class Meta:
@@ -19,7 +21,7 @@ class BaseModel(models.Model):
 
 
 class Retailer(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="retailer", null=False)
+    user = models.OneToOneField(Customer, on_delete=models.CASCADE, related_name="retailer", null=False)
     uuid = models.UUIDField(default=uuid.uuid4, db_index=True, unique=True)
     company_name = models.CharField(max_length=50, blank=True, null=False)
     phone_number = PhoneNumberField(blank=True, null=False)
@@ -70,7 +72,7 @@ class Vehicle(BaseModel):
         OTHER = 6, "Other"
 
     owner = models.ForeignKey(
-        get_user_model(),
+        Customer,
         related_name="vehicle",
         on_delete=models.CASCADE,
         null=True,
@@ -141,26 +143,26 @@ class Vehicle(BaseModel):
         return super().save(*args, **kwargs)
 
 
-class Offer(BaseModel):
-    retailer = models.ForeignKey(to="oldtimers.Retailer", related_name="offers", on_delete=models.CASCADE)
-    vehicle = models.OneToOneField(
-        to="oldtimers.Vehicle",
-        related_name="offers",
-        on_delete=models.CASCADE,
-    )
-
-    def offer_price(self):
-        self.offer_price = Decimal(float(self.vehicle.price) * float(self.retailer.service_fee))
-        return self.offer_price
-
-    def __str__(self):
-        return (
-            f"\n Date: {self.create_datetime} \n Seller: {self.retailer.company_name} "
-            f"({self.retailer.country}) "
-            f"\n Model: {self.vehicle.brand} {self.vehicle.model}"
-            f"\n Description: {self.vehicle.description}"
-            f"\n Buy now offer: {self.offer_price}"
-        )
+# class Offer(BaseModel):
+#     retailer = models.ForeignKey(to="Retailer", related_name="offers", on_delete=models.CASCADE)
+#     vehicle = models.OneToOneField(
+#         to="oldtimers.Vehicle",
+#         related_name="offers",
+#         on_delete=models.CASCADE,
+#     )
+#
+#     def offer_price(self):
+#         self.offer_price = Decimal(float(self.vehicle.price) * float(self.retailer.service_fee))
+#         return self.offer_price
+#
+#     def __str__(self):
+#         return (
+#             f"\n Date: {self.create_datetime} \n Seller: {self.retailer.company_name} "
+#             f"({self.retailer.country}) "
+#             f"\n Model: {self.vehicle.brand} {self.vehicle.model}"
+#             f"\n Description: {self.vehicle.description}"
+#             f"\n Buy now offer: {self.offer_price}"
+#         )
 
 
 class Employee(BaseModel):
@@ -169,8 +171,8 @@ class Employee(BaseModel):
         GENERAL_MANAGER = 1, "General Manager / Administrator"
         SALES_MANAGER = 2, "Sales Manager"
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="employee")
-    retailer = models.ForeignKey(to="oldtimers.Retailer", related_name="employees", on_delete=models.CASCADE)
+    user = models.OneToOneField(Customer, on_delete=models.CASCADE, related_name="employee")
+    retailer = models.ForeignKey(to="Retailer", related_name="employees", on_delete=models.CASCADE)
     uuid = models.UUIDField(
         primary_key=True,
         unique=True,
@@ -262,16 +264,16 @@ class Invoices(BaseModel):
 
 
 class InvoiceItems(BaseModel):
-    vehicle = models.ForeignKey(to="oldtimers.Vehicle", related_name="invoice_items_vehicle", on_delete=models.CASCADE)
+    vehicle = models.ForeignKey(to="Vehicle", related_name="invoice_items_vehicle", on_delete=models.CASCADE)
     delivery_service_id = models.ForeignKey(
-        to="oldtimers.DeliveryService",
+        to="DeliveryService",
         related_name="invoice_items",
         on_delete=models.CASCADE,
         null=False,
         blank=False,
     )
     invoices = models.ForeignKey(
-        to="oldtimers.Invoices",
+        to="Invoices",
         related_name="invoice_items",
         on_delete=models.CASCADE,
         null=False,
@@ -279,7 +281,7 @@ class InvoiceItems(BaseModel):
     )
     invoice_line_id = models.IntegerField(primary_key=True, blank=False, db_index=True, default="N/A")
     price = models.ForeignKey(
-        to="oldtimers.Vehicle",
+        to="Vehicle",
         related_name="invoice_items_price",
         on_delete=models.CASCADE,
         null=False,

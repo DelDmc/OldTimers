@@ -1,11 +1,11 @@
 import random
 import string
 
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from oldtimers.models import DeliveryService, Offer, Retailer, Vehicle
+from accounts.models import Customer as User
+from oldtimers.models import DeliveryService, Retailer, Vehicle
 
 
 def sample_retailer(id, user_id, company_name, **params):
@@ -32,11 +32,6 @@ def sample_vehicle(retailer_id, **params):
     return test_vehicle
 
 
-# def sample_offer(retailer_id, vehicle_id):
-#     test_offer = Offer.objects.create(retailer_id=retailer_id, vehicle_id=vehicle_id)
-#     return test_offer
-
-
 def sample_delivery_service(company_name):
     defaults = {"zip_code": "00001"}
     return DeliveryService.objects.create(company_name=company_name, **defaults)
@@ -44,8 +39,8 @@ def sample_delivery_service(company_name):
 
 class TestRetailerModel(TestCase):
     def setUp(self) -> None:
-        self.user = User.objects.create_user(id=1, username="testuser", password="12345")
-        self.user = User.objects.create_user(id=2, username="testuser1", password="12345")
+        self.user = User.objects.create_user(id=1, email="test@test.com", password="12345")
+        self.user = User.objects.create_user(id=2, email="test2@test.com", password="12345")
 
         defaults = {
             "user_id": 1,
@@ -74,7 +69,7 @@ class TestRetailerModel(TestCase):
 class TestVehicleModel(TestCase):
     def setUp(self) -> None:
 
-        self.user = User.objects.create_user(id=2, username="testuser1", password="123456")
+        self.user = User.objects.create_user(id=2, email="test@test.com", password="123456")
 
         self.test_retailer = sample_retailer(id=2, user_id=2, company_name="BravoMotors")
 
