@@ -143,28 +143,6 @@ class Vehicle(BaseModel):
         return super().save(*args, **kwargs)
 
 
-# class Offer(BaseModel):
-#     retailer = models.ForeignKey(to="Retailer", related_name="offers", on_delete=models.CASCADE)
-#     vehicle = models.OneToOneField(
-#         to="oldtimers.Vehicle",
-#         related_name="offers",
-#         on_delete=models.CASCADE,
-#     )
-#
-#     def offer_price(self):
-#         self.offer_price = Decimal(float(self.vehicle.price) * float(self.retailer.service_fee))
-#         return self.offer_price
-#
-#     def __str__(self):
-#         return (
-#             f"\n Date: {self.create_datetime} \n Seller: {self.retailer.company_name} "
-#             f"({self.retailer.country}) "
-#             f"\n Model: {self.vehicle.brand} {self.vehicle.model}"
-#             f"\n Description: {self.vehicle.description}"
-#             f"\n Buy now offer: {self.offer_price}"
-#         )
-
-
 class Employee(BaseModel):
     class EMPLOYEE_RANK_CHOICES(models.IntegerChoices):
         CEO = 0, "Chief Executive Officer"
