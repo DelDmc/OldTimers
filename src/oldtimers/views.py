@@ -1,10 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-
 # Create your views here.
-from django.views.generic import TemplateView, ListView
+from django.views.generic import ListView, TemplateView
 
-from oldtimers.models import Vehicle, Retailer
+from oldtimers.models import Retailer, Vehicle
 
 
 class IndexView(TemplateView):
@@ -24,6 +23,3 @@ class RetailerListView(ListView):
 
 class ContactsView(TemplateView):
     template_name = "contacts.html"
-
-
-
