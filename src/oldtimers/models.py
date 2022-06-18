@@ -55,25 +55,6 @@ class Vehicle(BaseModel):
     YEAR_OF_PRODUCTION_MIN = 1900
     YEAR_OF_PRODUCTION_MAX = 2000
 
-    COLOR_PALETTE = [
-        (
-            "#FFFFFF",
-            "white",
-        ),
-        (
-            "#000000",
-            "black",
-        ),
-        (
-            "#808080",
-            "gray",
-        ),
-        (
-            "#FF0000",
-            "red",
-        ),
-    ]
-
     class VEHICLE_CATEGORY_CHOICES(models.IntegerChoices):
         EU_ELITE = 0, "European Elite Classic"
         US_RETRO = 1, "US Retro"
@@ -147,7 +128,7 @@ class Vehicle(BaseModel):
     )
     mileage = models.PositiveBigIntegerField(null=True, blank=True, validators=[MaxValueValidator(3000000)])
     seats = models.SmallIntegerField(null=True, blank=True, validators=[MaxValueValidator(7), MinValueValidator(1)])
-    color = ColorField(samples=COLOR_PALETTE, blank=True, null=True)
+    color = ColorField(blank=True, null=True)
     transmission = models.PositiveSmallIntegerField(
         choices=VEHICLE_TRANSMISSION_CHOICES.choices,
         default=VEHICLE_TRANSMISSION_CHOICES.OTHER,

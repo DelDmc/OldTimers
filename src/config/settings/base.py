@@ -49,14 +49,17 @@ INSTALLED_APPS = [
 ]
 
 
-print(BASE_DIR)
 STATIC_ROOT = os.path.join(BASE_DIR, "static/oldtimers")
-print("STATIC_ROOT", STATIC_ROOT)
+
 # STATIC_ROOT = ""
 STATIC_URL = "/static/"
-print("STATIC_URL", STATIC_URL)
+
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-print("STATICFILES_DIRS: ", STATICFILES_DIRS)
+# print("BASE_DIR: ", BASE_DIR)
+# print("STATIC_ROOT:", STATIC_ROOT)
+# print("STATIC_URL: ", STATIC_URL)
+# print("STATICFILES_DIRS: ", STATICFILES_DIRS)
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
