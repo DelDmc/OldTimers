@@ -1,5 +1,6 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.db.models import Q
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404, render
 # Create your views here.
 from django.views.generic import ListView, TemplateView
 
@@ -14,6 +15,19 @@ class IndexView(TemplateView):
 class CarListingView(ListView):
     template_name = "cars_listing.html"
     model = Vehicle
+    # queryset = Vehicle.objects.all()
+    context_object_name = "vehicles"
+    # context_asian_legends = "asian_legend"
+    # context_offroad = "offroad"
+
+
+class CarListingByCategoryView(ListView):
+    template_name = "cars_listing_by_category.html"
+    context_object_name = "vehicles"
+
+    def get_queryset(self):
+        self.category = self.kwargs["category"]
+        return Vehicle.objects.filter(category=self.category)
 
 
 class RetailerListView(ListView):

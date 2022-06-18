@@ -140,7 +140,7 @@
 							<ul class="menu-container">
 								<li class="menu-item current"><a class="menu-link" href="{% url 'index' %}"><div>Home</div></a></li>
 								<!-- Mega Menu -->
-								<li class="menu-item mega-menu"><a class="menu-link" href="demo-car-single.html"><div>Models</div></a>
+								<li class="menu-item mega-menu"><a class="menu-link" href="{% url "oldtimers:get_cars" %}"><div>Models</div></a>
 									<div class="mega-menu-content mega-menu-style-2">
 										<div class="container">
 											<div class="row">
@@ -153,16 +153,16 @@
 
 															<!-- Mega Menu Cars Carousel -->
 															<div class="owl-carousel image-carousel carousel-widget" data-margin="20" data-nav="false" data-pagi="true" data-items-xs="1" data-items-sm="2" data-items-md="4" data-items-lg="6" data-items-xl="6">
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/1-2.png' %}" alt="Car">European Elite Classics</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/2-2.png' %}" alt="Car">European Racing Classics</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/3-3.png' %}" alt="Car">US Retro</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/4-4.png' %}" alt="Car">European Legends</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/5-5.png' %}" alt="Car">Fully Restored Oldtimers</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/6-1.png' %}" alt="Car">American Muscle Cars</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/7-1.png' %}" alt="Car">Classic Offroad</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/8-1.png' %}" alt="Car">Asian Legends</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/9-1.png' %}" alt="Car">Rare Supercars</a></div>
-																<div class="oc-item center"><a href="demo-car-single.html"><img src="{% static 'oldtimers/demos/car/images/mega-menu/10-1.png' %}" alt="Car">Deep Tuned Customs</a></div>
+																<div class="oc-item center"><a href="{% url "oldtimers:get_cars_by_cat" 0 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/1-2.png' %}" alt="Car">European Elite Classics</a></div>
+																<div class="oc-item center"><a href="{% url "oldtimers:get_cars_by_cat" 9 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/2-2.png' %}" alt="Car">European Racing Classics</a></div>
+																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 1 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/3-3.png' %}" alt="Car">US Retro</a></div>
+																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 2 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/4-4.png' %}" alt="Car">European Legends</a></div>
+																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 3 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/5-5.png' %}" alt="Car">Fully Restored Oldtimers</a></div>
+																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 4 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/6-1.png' %}" alt="Car">American Muscle Cars</a></div>
+																<div class="oc-item center"><a href="{% url "oldtimers:get_cars_by_cat" 5 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/7-1.png' %}" alt="Car">Classic Offroad</a></div>
+																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 6 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/8-1.png' %}" alt="Car">Asian Legends</a></div>
+																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 7 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/9-1.png' %}" alt="Car">Rare Supercars</a></div>
+																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 10 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/10-1.png' %}" alt="Car">Deep Tuned Customs</a></div>
 
 															</div>
 														</div>
@@ -174,10 +174,6 @@
 								</li>
 								<li class="menu-item"><a class="menu-link" href="{% url 'oldtimers:get_cars' %}"><div>Car Listing</div></a></li>
 								<li class="menu-item"><a class="menu-link" href="{% url 'oldtimers:get_retailers' %}"><div>Retailers</div></a></li>
-								<li class="menu-item"><a class="menu-link" href="{% static 'oldtimers/demo-car-accessories.html' %}"><div>Accessories</div></a></li>
-								<li class="menu-item"><a class="menu-link" href="{% static 'oldtimers/demo-car-interiors.html' %}"><div>Interiors</div></a></li>
-								<li class="menu-item"><a class="menu-link" href="{% static 'oldtimers/demo-car-faqs.html' %}"><div>FAQs</div></a></li>
-								<li class="menu-item"><a class="menu-link" href="{% static 'oldtimers/demo-car-blog.html' %}"><div>Blog</div></a></li>
 								<li class="menu-item"><a class="menu-link" href="{% url 'contacts' %}"><div>Contacts</div></a></li>
 							</ul>
 						</nav><!-- #primary-menu end -->

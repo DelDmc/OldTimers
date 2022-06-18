@@ -20,12 +20,10 @@ from django.urls import include, path
 from config.settings import base
 from oldtimers.views import ContactsView, IndexView
 
-urlpatterns = (
-    [
-        path("__debug__/", include("debug_toolbar.urls")),
-        path("oldtimers/", include("oldtimers.urls")),
-        path("admin/", admin.site.urls),
-        path("", IndexView.as_view(), name="index"),
-        path("contacts/", ContactsView.as_view(), name="contacts"),
-    ] + static(base.MEDIA_URL, document_root=base.MEDIA_ROOT)
-)
+urlpatterns = [
+    path("__debug__/", include("debug_toolbar.urls")),
+    path("oldtimers/", include("oldtimers.urls")),
+    path("admin/", admin.site.urls),
+    path("", IndexView.as_view(), name="index"),
+    path("contacts/", ContactsView.as_view(), name="contacts"),
+] + static(base.MEDIA_URL, document_root=base.MEDIA_ROOT)

@@ -1,6 +1,7 @@
 import uuid as uuid
 from decimal import Decimal
 
+from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -54,13 +55,37 @@ class Vehicle(BaseModel):
     YEAR_OF_PRODUCTION_MIN = 1900
     YEAR_OF_PRODUCTION_MAX = 2000
 
+    COLOR_PALETTE = [
+        (
+            "#FFFFFF",
+            "white",
+        ),
+        (
+            "#000000",
+            "black",
+        ),
+        (
+            "#808080",
+            "gray",
+        ),
+        (
+            "#FF0000",
+            "red",
+        ),
+    ]
+
     class VEHICLE_CATEGORY_CHOICES(models.IntegerChoices):
-        LUXURY = 0, "Lux Class"
-        SPORT = 1, "Sport Class"
-        SUV = 2, " SUV Class"
-        MOTORCYCLE = 3, "Moto"
-        RACE = 4, "Race Class"
-        OTHER = 5, " Other"
+        EU_ELITE = 0, "European Elite Classic"
+        US_RETRO = 1, "US Retro"
+        EU_LEGEND = 2, "European Legend"
+        RESTORED_OLDTIMER = 3, "Fully Restored Oldtimer"
+        US_MUSCLE = 4, "US Muscle Car"
+        OFFROAD = 5, "Offroad Classic"
+        ASIAN_LEGEND = 6, "Asian Legends"
+        RARE_SUPERCAR = 7, "Rare Supercar"
+        CUSTOM = 8, "Deep Tuned Custom"
+        EU_RACING = 9, "European Racing Classics"
+        OTHER = 10, " Other"
 
     class VEHICLE_CONDITION_CHOICES(models.IntegerChoices):
         EXCELLENT = 0, "Excellent"
@@ -70,6 +95,11 @@ class Vehicle(BaseModel):
         POOR = 4, "Poor"
         OUT_OF_ORDER = 5, "Out of order"
         OTHER = 6, "Other"
+
+    class VEHICLE_TRANSMISSION_CHOICES(models.IntegerChoices):
+        M = 0, "Manual"
+        A = 1, "Automatic"
+        OTHER = 2, "Other"
 
     owner = models.ForeignKey(
         Customer,
@@ -115,6 +145,15 @@ class Vehicle(BaseModel):
         null=True,
         blank=True,
     )
+    mileage = models.PositiveBigIntegerField(null=True, blank=True, validators=[MaxValueValidator(3000000)])
+    seats = models.SmallIntegerField(null=True, blank=True, validators=[MaxValueValidator(7), MinValueValidator(1)])
+    color = ColorField(samples=COLOR_PALETTE, blank=True, null=True)
+    transmission = models.PositiveSmallIntegerField(
+        choices=VEHICLE_TRANSMISSION_CHOICES.choices,
+        default=VEHICLE_TRANSMISSION_CHOICES.OTHER,
+        null=True,
+        blank=True,
+    )
     image = models.ImageField(
         default="default.png",
         upload_to="media/vehicle",
@@ -131,12 +170,7 @@ class Vehicle(BaseModel):
     )
 
     def __str__(self):
-        return (
-            f"{self.retailer.company_name} "
-            f"{self.brand} {self.model}"
-            f" {self.vin} {self.description} "
-            f"Price: {self.price} $ "
-        )
+        return f"{self.brand} {self.model}" f"Price: {self.price} $ "
 
     def save(self, *args, **kwargs):
         self.full_clean()
