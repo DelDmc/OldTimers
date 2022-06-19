@@ -65,11 +65,12 @@
 							<li class="activeFilter ml-auto"><a class="button button-small button-rounded button-reset" href="#" data-filter="*">Show All</a></li>
 						</ul><!-- .grid-filter end -->
 
+                        {% block vehicle %}
 						<!-- Portfolio Items
 						============================================= -->
                         <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
 
-                        {% block vehicle %}
+
                         {% for vehicle in vehicles %}
 
 							<!-- Car 1 -->

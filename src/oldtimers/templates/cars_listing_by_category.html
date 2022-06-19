@@ -1,9 +1,9 @@
 {% extends "cars_listing.html" %}
 
-{% block vehicle %}
+
 
     {% for vehicle in vehicles %}
-
+                    <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
 							<!-- Car 1 -->
 							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-sedan">
 								<div class="grid-inner">
@@ -32,8 +32,8 @@
                             {% empty %}
                                 <li><span style="font-size: larger">Sorry, no vehicles in sale now.</span></li>
 							</article>
+                    </div>
+    {% endfor %}
 
-                                {% endfor %}
 
 
-{% endblock %}
