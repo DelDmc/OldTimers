@@ -39,8 +39,8 @@ def sample_delivery_service(company_name):
 
 class TestRetailerModel(TestCase):
     def setUp(self) -> None:
-        self.user = User.objects.create_user(id=1, email="test@test.com", password="12345")
-        self.user = User.objects.create_user(id=2, email="test2@test.com", password="12345")
+        self.user = User.objects.create_user(id=1, email="test@test.com", username="test1", password="12345")
+        self.user = User.objects.create_user(id=2, email="test2@test.com", username="test2", password="12345")
 
         defaults = {
             "user_id": 1,

@@ -1,9 +1,61 @@
-{% extends "cars_listing.html" %}
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}
+<!-- Document Title
+	============================================= -->
+	<title>Listing - Car Demo | Canvas</title>
+
+	<style>
+
+		.dropdown-toggle::after { margin-left: 0.255em; }
+
+	</style>
+
+{% endblock %}
+{% block content %}
+<!-- Page Title
+		============================================= -->
+
+		<section id="page-title"
+                 class="page-title-parallax page-title-dark"
+                 style="background-image: url('{% static 'oldtimers/demos/car/images/hero-slider/8-3.jpg' %}');
+                         background-size:
+                         cover; padding:250px 0;"
+                 data-bottom-top="background-position:0px 0px;"
+                 data-top-bottom="background-position:0px -300px;">
+
+			<div class="container clearfix">
+				<h1>Car Listing</h1>
+				<ol class="breadcrumb" style="font-size: 1.15rem" >
+					<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+					<li class="breadcrumb-item"><a href="#">Cars</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Listing</li>
+				</ol>
+			</div>
+
+		</section><!-- #page-title end -->
+
+		<!-- Content
+		============================================= -->
+		<section id="content">
+			<div class="content-wrap pt-0" style="overflow: visible;">
+				<div class="container">
+
+				</div>
+
+				<div class="section m-0 pt-0 bg-transparent">
+					<div class="container"><br>
 
 
+                        {% block vehicle %}
+						<!-- Portfolio Items
+						============================================= -->
+                        <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
 
-    {% for vehicle in vehicles %}
-                    <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
+
+                        {% for vehicle in vehicles %}
+
 							<!-- Car 1 -->
 							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-sedan">
 								<div class="grid-inner">
@@ -29,11 +81,39 @@
 										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> {{ vehicle.production_year }}</span></div>
 									</div>
 								</div>
-                            {% empty %}
-                                <li><span style="font-size: larger">Sorry, no vehicles in sale now.</span></li>
+
 							</article>
-                    </div>
-    {% endfor %}
 
+                                {% endfor %}
 
+                            {% endblock %}
 
+						</div>
+													<!-- Pagination Filter============================================= -->
+						<ul class="pagination" data-container="#portfolio">
+
+                            {% if page_obj.has_previous %}
+							<li><a href="?page=1" class="button button-small button-rounded button-reset"><i ></i><span class="step-links">First</span></a></li>
+							<li><a href="?page={{ page_obj.previous_page_number }}" class="button button-small button-rounded button-reset"><i></i><span>Previous</span></a></li>
+                            {% endif %}
+
+							<li><a href="#"  class="button button-small button-rounded button-reset"><i ></i><span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></a></li>
+
+                            {% if page_obj.has_next %}
+                            <li><a href="?page={{ page_obj.next_page_number }}" class="button button-small button-rounded button-reset"><i ></i><span>Next</span></a></li>
+							<li><a href="?page={{ page_obj.paginator.num_pages }}" class="button button-small button-rounded button-reset"><i ></i><span>Last</span></a></li>
+
+						    {% endif %}
+                        </ul><!-- Paginator end -->
+					</div>
+				</div>
+
+				<div class="section center nbottomomargin mt-3 footer-stick" style="padding:80px 0 ">
+					<div class="container clearfix">
+						<h3 class="font-primary">Special Offers on Villa Long Term Rentals &amp; Lease Agreements</h3>
+						<a href="{% url "contacts" %}" class="button button-color button-large button-rounded">Contact Now</a>
+					</div>
+				</div>
+			</div>
+		</section><!-- #content end -->
+        {% endblock %}

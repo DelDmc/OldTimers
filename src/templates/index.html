@@ -54,7 +54,7 @@
 		.ares .tp-tab { border: 1px solid #eee; }
 		.ares .tp-tab-content { margin-top: -4px; }
 		.ares .tp-tab-content { padding: 15px 15px 15px 110px; }
-		.ares .tp-tab-image { width: 110px;height: 80px; }
+		.ares .tp-tab-image { width: 180px;height: 80px; }
 
 	</style>
 
@@ -81,7 +81,7 @@
 
 			<div class="widget clearfix">
 
-				<a href="index.html"><img src="{% static 'oldtimers/demos/car/images/logo_oldtimers@2x-1.png' %}" alt="Canvas Logo" height="50"></a>
+				<a href="index.html"><img src="{% static 'oldtimers/demos/car/images/logo_oldtimers@2x-1.png' %}" alt="OldTimers Logo" height="50"></a>
 
 				<p>It has always been, and will always be, about quality. We're passionate about ethically sourcing the finest coffee beans, roasting them with great care. We'd like to hear your message!</p>
 
@@ -140,7 +140,7 @@
 							<ul class="menu-container">
 								<li class="menu-item current"><a class="menu-link" href="{% url 'index' %}"><div>Home</div></a></li>
 								<!-- Mega Menu -->
-								<li class="menu-item mega-menu"><a class="menu-link" href="{% url "oldtimers:get_cars" %}"><div>Car Listing</div></a>
+								<li class="menu-item mega-menu"><a class="menu-link" href="{% url "oldtimers:get_cars_by_cat" 99 %}"><div>Car Listing</div></a>
 									<div class="mega-menu-content mega-menu-style-2">
 										<div class="container">
 											<div class="row">
@@ -149,7 +149,7 @@
 														<div class="widget text-center">
 
 															<h3 class="mb-0">Featured Models</h3>
-															<a href="#" class="button button-small button-rounded button-border button-dark button-black font-primary" style="margin: 10px 0 40px">Show all Cars</a>
+															<a href="{% url "oldtimers:get_cars_by_cat" 99 %}" class="button button-small button-rounded button-border button-dark button-black font-primary" style="margin: 10px 0 40px">Show all Cars</a>
 
 															<!-- Mega Menu Cars Carousel -->
 															<div class="owl-carousel image-carousel carousel-widget" data-margin="20" data-nav="false" data-pagi="true" data-items-xs="1" data-items-sm="2" data-items-md="4" data-items-lg="6" data-items-xl="6">
@@ -174,6 +174,11 @@
 								</li>
 								<li class="menu-item"><a class="menu-link" href="{% url 'oldtimers:get_retailers' %}"><div>Retailers</div></a></li>
 								<li class="menu-item"><a class="menu-link" href="{% url 'contacts' %}"><div>Contacts</div></a></li>
+                                {% if user.is_authenticated %}
+                                <li class="menu-item"><a class="menu-link" href="{% url 'accounts:logout' %}"><div>LOGOUT</div></a></li>
+                                {% elif not user.is_authenticated %}
+                                <li class="menu-item"><a class="menu-link" href="{% url 'accounts:login' %}"><div>LOGIN</div></a></li>
+                                {% endif %}
 							</ul>
 						</nav><!-- #primary-menu end -->
 
@@ -913,13 +918,7 @@
 					</div>
 				</div>
 
-				<!-- 360 degree car
-				============================================= -->
 
-				</div> <!-- 360 Degree Section End -->
-
-				<!-- 360 degree car
-				============================================= -->
 				<div class="section m-0 bg-transparent clearfix" style="padding: 100px 0;">
 					<div class="container clearfix">
 						<div class="heading-block center">
@@ -927,182 +926,41 @@
 							<h3 class="font-weight-bold">Featured Vehicles</h3>
 						</div>
 
-						<!-- Grid Filter
-						============================================= -->
-						<ul class="grid-filter style-2 w-100" data-container="#portfolio">
-							<li><a href="#" data-filter=".cf-cuv"><i class="icon-car-cuv"></i><span>Cuv</span></a></li>
-							<li><a href="#" data-filter=".cf-sedan"><i class="icon-car-sedan"></i><span>Sedan</span></a></li>
-							<li><a href="#" data-filter=".cf-supercar"><i class="icon-car-supercar"></i><span>Supercar</span></a></li>
-							<li><a href="#" data-filter=".cf-hatchback"><i class="icon-car-hatchback"></i><span>Hatchback</span></a></li>
-							<li><a href="#" data-filter=".cf-cabriolet"><i class="icon-car-cabriolet"></i><span>Cabriolet</span></a></li>
-							<!-- Show All Button -->
-							<li class="activeFilter ml-auto"><a class="button button-small button-rounded button-reset" href="#" data-filter="*">Show All</a></li>
-						</ul><!-- .grid-filter end -->
-
-
 						<!-- Portfolio Items
 						============================================= -->
 						<div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
-
+                        {% for vehicle in vehicles %}
 							<!-- Car 1 -->
+
 							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-sedan">
 								<div class="grid-inner">
 									<div class="portfolio-image">
 										<a href="demos/car/car-single.html">
-											<img src="{% static 'oldtimers/demos/car/images/filter-cars/1-1.jpg' %}" alt="Open Imagination">
+											<img src="{{ vehicle.image.url }}" alt="Open Imagination">
 											<div class="filter-p-pricing">
-												<span class="p-price font-weight-bold ls1">$32,568</span>
-												<span class="p-price-msrp">MSRP : <strong>$35,698</strong></span>
+												<span class="p-price font-weight-bold ls1"><strong>{{ vehicle.price }}</strong> $</span>
 											</div>
 										</a>
 									</div>
 									<div class="portfolio-desc">
-										<h3><a href="demos/car/car-single.html">Ford Mustang - Dark Beast</a></h3>
-										<span>Dramatically synthesize parallel applications vis-a-vis revolutionary e-tailers. Monotonectally incubate cooperative partnerships.</span>
+										<h3><a href="demos/car/car-single.html">{{ vehicle.production_year}} {{ vehicle.brand }} {{ vehicle.model }}</a></h3>
+                                        <h5><a>{{ vehicle.get_category_display }}</a></h5>
+										<span>{{ vehicle.description }}</span>
 									</div>
 									<div class="row no-gutters car-p-features font-primary clearfix">
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> 20000</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-door"></i><span> 5 Seater</span></div>
+										<div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> {{ vehicle.mileage }}</span></div>
+										<div class="col-lg-4 col-6 p-0"><i class="icon-car-door"></i><span> {{ vehicle.seats }}-seater</span></div>
 										<div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel2"></i><span> 20kmpl</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> Automatic</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-wheel"></i><span> 15 Inch</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> 2021</span></div>
+										<div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> {{ vehicle.get_transmission_display}}</span></div>
+										<div class="col-lg-4 col-6 p-0"><i class="icon-car-paint" ></i><span style="color:{{ vehicle.color }}">&#9733; &#9733; </span></div>
+										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> {{ vehicle.production_year }}</span></div>
 									</div>
 								</div>
-							</article>
 
+							</article>
+                        {% endfor %}
 							<!-- Car 2 -->
-							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-suv">
-								<div class="grid-inner">
-									<div class="portfolio-image">
-										<a href="demos/car/car-single.html">
-											<img src="{% static 'oldtimers/demos/car/images/filter-cars/2-1.jpg' %}" alt="Open Imagination">
-											<div class="filter-p-pricing">
-												<span class="p-price font-weight-bold ls1">$32,568</span>
-												<span class="p-price-msrp">MSRP : <strong>$35,698</strong></span>
-											</div>
-										</a>
-									</div>
-									<div class="portfolio-desc">
-										<h3><a href="demos/car/car-single.html">1971 Chevrolet Suburban </a></h3>
-										<span>Enthusiastically incubate turnkey technologies for exceptional materials. Seamlessly implement emerging scenarios.</span>
-									</div>
-									<div class="row no-gutters car-p-features font-primary clearfix">
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> 0-50 mph</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-door"></i><span> 7 Seater</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-paint"></i><span> Brown</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> Manual</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-wheel"></i><span> 20-Inch</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> 2021</span></div>
-									</div>
-								</div>
-							</article>
 
-							<!-- Car 3 -->
-							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-cabriolet">
-								<div class="grid-inner">
-									<div class="portfolio-image">
-										<a href="demos/car/car-single.html">
-											<img src="{% static 'oldtimers/demos/car/images/filter-cars/3-1.jpg' %}" alt="Open Imagination">
-											<div class="filter-p-pricing">
-												<span class="p-price font-weight-bold ls1">$62,300</span>
-												<span class="p-price-msrp">MSRP : <strong>$62,700</strong></span>
-											</div>
-										</a>
-									</div>
-									<div class="portfolio-desc">
-										<h3><a href="demos/car/car-single.html">1985 Audi Sport Quattro Group B</a></h3>
-										<span>Competently evolve intuitive synergy without corporate human capital. Monotonectally.</span>
-									</div>
-									<div class="row no-gutters car-p-features font-primary clearfix">
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> 0-60 mph</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-bearing"></i><span> Six-cylinder</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel2"></i><span> 23 mpg8</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> Automatic</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> 2021</span></div>
-									</div>
-								</div>
-							</article>
-
-							<!-- Car 4 -->
-							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-cuv">
-								<div class="grid-inner">
-									<div class="portfolio-image">
-										<a href="demos/car/car-single.html">
-											<img src="{% static 'oldtimers/demos/car/images/filter-cars/4-1.jpg' %}" alt="Open Imagination">
-											<div class="filter-p-pricing">
-												<span class="p-price font-weight-bold ls1">$88,568</span>
-												<span class="p-price-msrp">MSRP : <strong>$88,698</strong></span>
-											</div>
-										</a>
-									</div>
-									<div class="portfolio-desc">
-										<h3><a href="demos/car/car-single.html">1973 BMW 3.0 CSi</a></h3>
-										<span>Energistically engineer user friendly synergy vis-a-vis enabled channels. Rapidiously utilize value-added. Laudantium debitis perferendis obcaecati.</span>
-									</div>
-									<div class="row no-gutters car-p-features font-primary clearfix">
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> 0-80 mph</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel2"></i><span> Hybrid</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> Automatic</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-stearing"></i><span> 3000</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> 2021</span></div>
-									</div>
-								</div>
-							</article>
-
-							<!-- Car 5 -->
-							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-supercar">
-								<div class="grid-inner">
-									<div class="portfolio-image">
-										<a href="demos/car/car-single.html">
-											<img src="{% static 'oldtimers/demos/car/images/filter-cars/5-1.jpg' %}" alt="Open Imagination">
-											<div class="filter-p-pricing">
-												<span class="p-price font-weight-bold ls1">$32,568</span>
-												<span class="p-price-msrp">MSRP : <strong>$35,698</strong></span>
-											</div>
-										</a>
-									</div>
-									<div class="portfolio-desc">
-										<h3><a href="demos/car/car-single.html">1990 TOYOTA SUPRA 2JZ-GTE</a></h3>
-										<span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium debitis unde laboriosam perferendis obcaecati.</span>
-									</div>
-									<div class="row no-gutters car-p-features font-primary clearfix">
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-cog3"></i><span> 30,000 mi</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-paint"></i><span> Metalic</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel"></i><span> 11 kmpl</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> Automatic</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-wheel"></i><span> 18 Inch</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> 2021</span></div>
-									</div>
-								</div>
-							</article>
-
-							<!-- Car 6 -->
-							<article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-hatchback">
-								<div class="grid-inner">
-									<div class="portfolio-image">
-										<a href="demos/car/car-single.html">
-											<img src="{% static 'oldtimers/demos/car/images/filter-cars/6-1.jpg' %}" alt="Open Imagination">
-											<div class="filter-p-pricing">
-												<span class="p-price font-weight-bold ls1">$32,568</span>
-												<span class="p-price-msrp">MSRP : <strong>$35,698</strong></span>
-											</div>
-										</a>
-									</div>
-									<div class="portfolio-desc">
-										<h3><a href="demos/car/car-single.html">NISSAN SKYLINE 2000 GT-R</a></h3>
-										<span>Appropriately exploit strategic niche markets rather than optimal products. Enthusiastically negotiate perferendis the art methods of empowermen.</span>
-									</div>
-									<div class="row no-gutters car-p-features font-primary clearfix">
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> 20000</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-door"></i><span> 5 Seater</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel2"></i><span> 20kmpl</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> Automatic</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-wheel"></i><span> 15 Inch</span></div>
-										<div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> 2021</span></div>
-									</div>
-								</div>
-							</article>
 
 						</div>
 
@@ -1197,7 +1055,9 @@
 							<div class="col-lg-3 col-md-6 center">
 								<div>
 									<i class="i-plain i-large mx-auto color icon-car-money"></i>
-									<div class="counter"><span data-from="10" data-to="145" data-refresh-interval="50" data-speed="700"></span></div>
+
+									<div class="counter"><span data-from="0" data-to="{{ counter }}" data-refresh-interval="50" data-speed="700"></span></div>
+
 									<h5>Cars in Stock</h5>
 								</div>
 							</div>

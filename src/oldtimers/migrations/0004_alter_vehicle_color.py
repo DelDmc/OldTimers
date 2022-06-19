@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('oldtimers', '0003_alter_vehicle_category'),
+        ("oldtimers", "0003_alter_vehicle_category"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='vehicle',
-            name='color',
-            field=colorfield.fields.ColorField(blank=True, default=None, image_field=None, max_length=18, null=True, samples=None),
+            model_name="vehicle",
+            name="color",
+            field=colorfield.fields.ColorField(
+                blank=True, default=None, image_field=None, max_length=18, null=True, samples=None
+            ),
         ),
     ]
