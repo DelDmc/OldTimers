@@ -98,7 +98,7 @@ class Vehicle(BaseModel):
     )
     retailer = models.ForeignKey(
         Retailer,
-        related_name="vehicles",
+        related_name="vehicle",
         on_delete=models.SET_DEFAULT,
         null=True,
         blank=True,

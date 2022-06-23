@@ -1,3 +1,4 @@
+from decimal import Decimal
 from random import randint, random, shuffle
 
 from django.db.models import Q
@@ -33,7 +34,7 @@ class IndexView(TemplateView):
 class CarListingByCategoryView(ListView):
     template_name = "cars_listing_by_category.html"
     context_object_name = "vehicles"
-    paginate_by = 3
+    paginate_by = 6
 
     def get_queryset(self):
         self.category = self.kwargs["category"]
@@ -49,6 +50,14 @@ class RetailerListView(ListView, TemplateResponseMixin):
     context_object_name = "retailers"
     queryset = Retailer.objects.all()
     additional_context = "retailers_vehicles"
+    search_form_context = "sorted_retailer"
+
+    vehicle_args = {
+        "retailer": fields.Str(required=False),
+        "brand": fields.Str(required=False),
+        "production_year": fields.Int(required=False,),
+        "price__range": fields.Str(required=False)
+    }
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -60,42 +69,26 @@ class RetailerListView(ListView, TemplateResponseMixin):
         print("kwargs", kwargs)
         return kwargs
 
-    # specific_retailer_vehicle_template = "retailer_vehicle.html"
-    # context_object_name = "retailers"
-    # extra_context = "vehicles"
-    # queryset = Retailer.objects.all()
-    # only_retailers_vehicles = Vehicle.objects.filter(retailer_id=True)
-    #
-    # vehicle_args = {
-    #     "retailer": fields.Str(required=False),
-    #     "brand": fields.Str(required=False),
-    #     "production_year": fields.Int(required=False),
-    #     "price": fields.Int(required=False)
-    # }
-    #
-    # # def get_template_names(self):
-    # #     return [self.template_name, self.specific_retailer_vehicle_template]
-    #
-    # @use_args(vehicle_args, location="query")
-    # def get(self, request, parameters, *args, **kwargs):
-    #     super(RetailerListView, self).get(request, *args, **kwargs)
-    #     specific_retailer_vehicles = self.get_vehicles(request, parameters)
-    #     context = self.get_context_data(specific_retailer_vehicles=specific_retailer_vehicles)
-    #     return self.render_to_response(context)
-    #
-    # def get_context_data(self,  **kwargs):
-    #     kwargs["vehicles"] = self.only_retailers_vehicles
-    #     kwargs["retailers"] = self.queryset
-    #     print("kwargs", kwargs)
-    #     return kwargs
-    #
-    # def get_vehicles(self, request, parameters):
-    #     retailer_vehicles = self.only_retailers_vehicles
-    #     for param_name, param_value in parameters.items():
-    #         if param_value:
-    #             retailer_vehicles = retailer_vehicles.filter(**{param_name: param_value})
-    #     print("vehicles", retailer_vehicles)
-    #     return retailer_vehicles
+    @use_args(vehicle_args, location="query")
+    def get(self, request, parameters, *args, **kwargs):
+        print("parameters", parameters)
+
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        vehicles = [vehicle for vehicle in self.get_vehicles(request, parameters)]
+        context["sorted_retailer"] = vehicles
+        print("context", context)
+        return self.render_to_response(context)
+
+    def get_vehicles(self, request, parameters):
+        price_range = parameters.get('price__range').split(";")
+        parameters['price__range'] = tuple(float(item) for item in price_range)
+        retailer_sorted_vehicles = [
+            Vehicle.objects.filter(**{param_name: param_value}) for param_name, param_value in parameters.items()
+        ]
+        print("retailer_sorted_vehicles", retailer_sorted_vehicles)
+        print("parameters", parameters)
+        return retailer_sorted_vehicles
 
 
 class ContactsView(TemplateView):

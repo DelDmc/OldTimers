@@ -103,9 +103,63 @@
 
                 <!-- Search vehicle form
                 ====================================== -->
-                    {% include "search_vehicle.html" %}
+                <div class="col-md-4 col-sm-12 px-0" style="height: 750px">
+                    <div class="card bg-color rounded-0 shadow-sm p-4 h-100">
+                        <div class="card-body">
+                            <h3 style="font-weight: bolder; font-size: xx-large" class="text-white">SEARCH RETAILER:</h3>
 
-				</div>
+                            <form class="mb-0"
+                                  action="{% url 'oldtimers:get_retailers' %}"
+                                  method="GET">
+                                <div class="row">
+                                    <div class="col-12 mt-3">
+                                        <label class="text-white">All Retailers</label>
+                                        <select class="selectpicker form-control customjs" name="retailer" title="Select Retailer"  data-size="7" data-live-search="true" multiple style="width:100%;">
+                                            <optgroup label="All Retailers">
+                                                {% for retailer in retailers_vehicles.keys %}
+                                                <option value="{{ retailer.id }}">{{ retailer.company_name }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <label class="text-white">Select Brand</label>
+                                        <select class="selectpicker form-control customjs" title="Select Brand" name="brand" data-size="7" data-live-search="true" multiple style="width:100%;">
+                                            <optgroup label="All Brands">
+                                            {% for retailer in retailers_vehicles.values %}
+                                                {% for vehicle in retailer %}
+                                                <option>{{ vehicle.brand }}</option>
+                                            {% endfor %}
+                                            {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-3 ui-datepicker-calendar">
+                                        <label class="text-white">Select Year</label>
+                                        <select class="selectpicker form-control customjs" title="Select Year" name="production_year" data-size="7" data-live-search="true" multiple style="width:100%;">
+                                            <optgroup label="Year of manufacture">
+                                            {% for retailer in retailers_vehicles.values %}
+                                                {% for vehicle in retailer %}
+                                                <option>{{ vehicle.production_year }}</option>
+                                            {% endfor %}
+                                            {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-3 dark input-daterange travel-date-group">
+                                        <label class="text-white">Price Range</label>
+                                        <input class="price-range" id="price" name="price__range" />
+                                    </div>
+                                    <div class="col-12 mt-4">
+                                        <button class="button button-3d button-rounded button-white button-light button-large btn-block m-0">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
 
 			</div>
 		</div>
@@ -191,6 +245,45 @@
 
 				<div class="section m-0">
 					<div class="container">
+                    <div class="heading-block mb-4 center">
+							<h2>Search result</h2>
+                        </div>
+                            {% for vehicle in sorted_retailer %}
+                        <div class="w-75">
+                            <h2 class="mb-1">{{ vehicle }}</h2>
+                        </div>
+                        <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
+                            <!-- Car 1 -->
+                            {% for vehicle in retailers_vehicles.sorted_retailer %}
+                            <article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-sedan">
+                                <div class="grid-inner">
+                                    <div class="portfolio-image">
+                                        <a href="demos/car/car-single.html">
+                                            <img src="{{ vehicle.image.url }}" alt="Open Imagination" >
+                                            <div class="filter-p-pricing">
+                                                <span class="p-price font-weight-bold ls1"><strong>{{ vehicle.price }}</strong> $</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="portfolio-desc">
+                                        <span><a style="font-size: larger">{{ vehicle.retailer.company_name }}</a></span>
+                                        <h3><a href="demos/car/car-single.html">{{ vehicle.production_year}} {{ vehicle.brand }} {{ vehicle.model }}</a></h3>
+                                        <h5><a>{{ vehicle.get_category_display }}</a></h5>
+                                        <span>{{ vehicle.description }}</span>
+                                    </div>
+                                    <div class="row no-gutters car-p-features font-primary clearfix">
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> {{ vehicle.mileage }}</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-door"></i><span> {{ vehicle.seats }}-seater</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel2"></i><span> 20kmpl</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> {{ vehicle.get_transmission_display}}</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-paint" ></i><span style="color:{{ vehicle.color }}">&#9733; &#9733; </span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> {{ vehicle.production_year }}</span></div>
+                                    </div>
+                                </div>
+                            </article>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
 						<div class="heading-block mb-4 center">
 							<h2>Our retailers</h2>
                         </div>
