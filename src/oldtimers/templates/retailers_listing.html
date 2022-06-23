@@ -8,10 +8,6 @@
 
 	<style>
 
-		.dropdown-toggle::after { margin-left: 0.255em; }
-
-		.dark .irs-bar { background-color: #CCC }
-		.dark .irs-grid-text { color: #EEE }
 
 		.slide-caption {
 			position: absolute;
@@ -66,9 +62,9 @@
 		}
 
 	</style>
-    {% endblock %}
+        {% endblock %}
 
-    {% block content %}
+        {% block content %}
 		<!-- Slider
 		============================================= -->
 		<div id="slider" class="slider-element h-auto">
@@ -146,9 +142,9 @@
                                             </optgroup>
                                         </select>
                                     </div>
-                                    <div class="col-12 mt-3 dark input-daterange travel-date-group">
+                                    <div class="col-12 mt-3 dark input-daterange travel-date-group" style="padding-top: 65px">
                                         <label class="text-white">Price Range</label>
-                                        <input class="price-range" id="price" name="price__range" />
+                                        <input class="price-range" id="price" name="price__range" disabled/>
                                     </div>
                                     <div class="col-12 mt-4">
                                         <button class="button button-3d button-rounded button-white button-light button-large btn-block m-0">Submit</button>
@@ -158,9 +154,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
 			</div>
 		</div>
 
@@ -245,16 +238,13 @@
 
 				<div class="section m-0">
 					<div class="container">
-                    <div class="heading-block mb-4 center">
-							<h2>Search result</h2>
+                        <div class="heading-block mb-4 center">
+							<h2>Search results</h2>
                         </div>
-                            {% for vehicle in sorted_retailer %}
-                        <div class="w-75">
-                            <h2 class="mb-1">{{ vehicle }}</h2>
-                        </div>
+
                         <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
                             <!-- Car 1 -->
-                            {% for vehicle in retailers_vehicles.sorted_retailer %}
+                            {% for vehicle in sorted_vehicles %}
                             <article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-sedan">
                                 <div class="grid-inner">
                                     <div class="portfolio-image">
@@ -281,12 +271,16 @@
                                     </div>
                                 </div>
                             </article>
+                            {% empty %}
+                                <h2>No vehicles found</h2>
                             {% endfor %}
                         </div>
-                        {% endfor %}
-						<div class="heading-block mb-4 center">
+
+
+						<div class="heading-block mb-4 center" style="padding-top: 50px">
 							<h2>Our retailers</h2>
                         </div>
+
                             {% for retailer, vehicles in retailers_vehicles.items %}
                         <div class="w-75">
                             <h2 class="mb-1">{{ retailer.company_name }}</h2>
@@ -327,8 +321,4 @@
 				</div>
 			</div>
 		</section><!-- #content end -->
-
-{% endblock %}
-
-
-
+        {% endblock %}
