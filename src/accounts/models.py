@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.mail import send_mail
 from django.db import models
 from django.utils.translation import ugettext as _
+from django_countries.fields import CountryField
+from phonenumber_field.modelfields import PhoneNumberField
 
 from accounts.managers import CustomerManager
 
@@ -12,6 +14,9 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_("first name"), max_length=156, blank=True)
     last_name = models.CharField(_("last name"), max_length=156, blank=True)
     birthdate = models.DateField(_("birthday"), null=True, blank=True)
+    country = CountryField(blank=True, null=True)
+    city = models.CharField(_("city"), max_length=64, blank=True, null=True)
+    phone_number = PhoneNumberField(blank=True, null=True)
 
     is_staff = models.BooleanField(
         _("staff status"),

@@ -31,6 +31,13 @@ class Retailer(BaseModel):
     city = models.CharField(_("city"), max_length=64, blank=True, null=False)
     country = CountryField(blank=True, null=False)
     zip_code = models.CharField(_("zip code"), max_length=5, blank=True, null=False)
+    description = models.TextField(
+        _("description"),
+        max_length=500,
+        null=False,
+        blank=True,
+    )
+    photo = models.ImageField(upload_to="users_photo/", null=True, blank=True)
     service_fee = models.DecimalField(
         max_digits=19,
         decimal_places=2,
@@ -41,7 +48,7 @@ class Retailer(BaseModel):
     )
 
     def __str__(self):
-        return f"{self.company_name} Id: {self.id}  Service fee: {self.service_fee} {self.vehicle.model}"
+        return f"{self.company_name} - {self.city} ({self.get_country_display()})"
 
     def vehicles_count(self):
         return self.vehicles.count()
@@ -151,7 +158,7 @@ class Vehicle(BaseModel):
     )
 
     def __str__(self):
-        return f"{self.brand} {self.model}" f"Price: {self.price} $ "
+        return f"{self.brand} {self.model} Price: {self.price} $ "
 
     def save(self, *args, **kwargs):
         self.full_clean()

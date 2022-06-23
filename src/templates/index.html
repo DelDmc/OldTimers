@@ -27,6 +27,12 @@
 	<link rel="stylesheet" href="{% static 'oldtimers/demos/car/css/car-icons/style.css' %}" type="text/css" />
 	<!-- / -->
 
+    	<!-- Datepicker Slider CSS -->
+	<link rel="stylesheet" href="{% static 'oldtimers/css/components/datepicker.css' %}" type="text/css" />
+
+	<!-- Range Slider CSS -->
+	<link rel="stylesheet" href="{% static 'oldtimers/css/components/ion.rangeslider.css' %}" type="text/css" />
+
 	<link rel="stylesheet" href="{% static 'oldtimers/css/animate.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'oldtimers/css/magnific-popup.css' %}" type="text/css" />
 
@@ -928,7 +934,7 @@
 
 						<!-- Portfolio Items
 						============================================= -->
-						<div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
+						<div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30"  style="position: relative">
                         {% for vehicle in vehicles %}
 							<!-- Car 1 -->
 
@@ -936,7 +942,7 @@
 								<div class="grid-inner">
 									<div class="portfolio-image">
 										<a href="demos/car/car-single.html">
-											<img src="{{ vehicle.image.url }}" alt="Open Imagination">
+											<img src="{{ vehicle.image.url }}" alt="Open Imagination" >
 											<div class="filter-p-pricing">
 												<span class="p-price font-weight-bold ls1"><strong>{{ vehicle.price }}</strong> $</span>
 											</div>
@@ -1257,6 +1263,15 @@
 	<!-- Bootstrap Select Plugin -->
 	<script src="{% static 'oldtimers/js/components/bs-select.js' %}"></script>
 
+    	<!-- Bootstrap Switch Plugin -->
+	<script src="{% static 'oldtimers/js/components/bs-switches.js' %}"></script>
+
+    	<!-- Datepicker Slider Plugin -->
+	<script src="{% static 'oldtimers/js/components/datepicker.js' %}"></script>
+
+    	<!-- Range Slider Plugin -->
+	<script src="{% static 'oldtimers/js/components/rangeslider.min.js' %}"></script>
+
 	<!-- SLIDER REVOLUTION 5.x SCRIPTS  -->
 	<script src="{% static 'oldtimers/include/rs-plugin/js/jquery.themepunch.tools.min.js' %}"></script>
 	<script src="{% static 'oldtimers/include/rs-plugin/js/jquery.themepunch.revolution.min.js' %}"></script>
@@ -1300,6 +1315,26 @@
 			});
 		});
 
+        jQuery(".bt-switch").bootstrapSwitch();
+
+		$(function() {
+			$('.travel-date-group').datepicker({
+				autoclose: true,
+				startView: 2,
+    			minViewMode: 2,
+    			todayHighlight: false,
+    			defaultViewDate: { year: 2010}
+			});
+
+			$(".price-range").ionRangeSlider({
+				type: "double",
+				grid: true,
+				min: 5000,
+				max: 5000000,
+				from: 5000,
+				prefix: "$"
+			});
+		});
 
 		// Rev Slider
 		var tpj=jQuery;
