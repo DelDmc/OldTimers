@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "accounts",
     "oldtimers",
     "colorfield",
+    "api",
+    "rest_framework",
 ]
 
 
