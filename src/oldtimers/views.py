@@ -91,7 +91,7 @@ class RetailerListView(ListView, TemplateResponseMixin):
                 price_to = self.max_vehicle_price
         else:
             if price_to:
-                price_from = Decimal(int(price_from))
+                price_from = self.min_vehicle_price
                 price_to = Decimal(int(price_to))
             else:
                 price_from = None
@@ -105,16 +105,14 @@ class RetailerListView(ListView, TemplateResponseMixin):
 
     def get_vehicles(self, parameters):
         """Returns list of sorted vehicles as per data received from parameters"""
-        print(parameters)
         if parameters:
-            search_form_context = None
             price_range = self.get_price_range(parameters)
             parameters.pop("price_from")
             parameters.pop("price_to")
 
             if price_range:
                 parameters["price__range"] = price_range
-        print(parameters)
+
         for param_name, param_value in parameters.items():
             search_form_context = Vehicle.objects.filter(**{param_name: param_value})
             return search_form_context
