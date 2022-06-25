@@ -7,7 +7,7 @@ from pathlib import Path
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     if sys.argv[1] == "test":
         print("NOTE: Running BLACK formation:")
         BASE_DIR = Path(__file__).resolve().parent.parent
