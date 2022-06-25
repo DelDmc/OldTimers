@@ -1,0 +1,324 @@
+{% extends "index.html" %}
+{% load static %}
+
+    {% block title %}
+	<!-- Document Title
+	============================================= -->
+	<title>Retailers - OldTimers </title>
+
+	<style>
+
+
+		.slide-caption {
+			position: absolute;
+			opacity: 0;
+			max-width: none !important;
+			-webkit-transition: opacity .4s .4s, transform .4s .4s ease-in-out ;
+			-o-transition: opacity .4s .4s, transform .4s .4s ease-in-out ;
+			transition: opacity .4s .4s, transform .4s .4s ease-in-out ;
+			-webkit-transform: translateY(50px);
+			-ms-transform: translateY(50px);
+			-o-transform: translateY(50px);
+			transform: translateY(50px);
+		}
+
+		.flex-viewport { height: 100% !important; }
+
+		.slide-caption.slider-caption-bottom {
+			padding: 20px;
+			width: 100%;
+			min-width: 100%;
+			height: auto !important;
+			left: 0;
+			top: auto;
+			bottom: 0;
+		}
+
+		.slide-caption.slider-caption-bottom p {
+			margin-bottom: 0;
+			font-size: 15px;
+		}
+
+		.slide.flex-active-slide .slide-caption {
+			opacity: 1;
+			-webkit-transform: translateY(0);
+			-ms-transform: translateY(0);
+			-o-transform: translateY(0);
+			transform: translateY(0);
+		}
+
+		.slide .slide-caption.card {
+			width: auto !important;
+			height: auto !important;
+			top: 20px;
+			font-size: 18px;
+			-webkit-transform: translateY(0);
+			-ms-transform: translateY(0);
+			-o-transform: translateY(0);
+			transform: translateY(0);
+			-webkit-transition: opacity .4s .6s;
+			-o-transition: opacity .4s .6s;
+			transition: opacity .4s .6s;
+		}
+
+	</style>
+        {% endblock %}
+
+        {% block content %}
+		<!-- Slider
+		============================================= -->
+		<div id="slider" class="slider-element h-auto">
+			<div class="slider-inner">
+
+				<div class="row align-items-stretch flex-md-row-reverse mx-0">
+					<div class="col-md-8 col-sm-12 px-0 min-vh-50">
+						<div class="fslider h-100 shadow-sm" data-arrows="true" data-autoplay="6000" data-loop="true">
+							<div class="flexslider h-100">
+								<div class="slider-wrap h-100">
+
+                                    {% for retailer in retailers_vehicles.keys %}
+
+									<div class="slide h-100" style="background: url({{ retailer.photo.url }}) center center; background-size: cover;">
+										<div class="slide-caption bg-dark card shadow-sm ml-4"><div class="card-body font-weight-semibold py-1 px-2 text-light">
+                                            {{ retailer.get_country_display }}</div></div>
+										<div style="opacity: 65%" class="slide-caption d-flex justify-content-between align-items-center flex-row dark slider-caption-bottom bg-dark slider-caption-bg py-4 px-4">
+											<div class="w-75">
+												<h2 class="mb-1">{{ retailer.company_name }}</h2>
+												<p class="font-weight-light text-white-50">{{ retailer.description }}</p>
+											</div>
+											<h2 class="font-weight-bold h2 mb-0">{{ retailer.phone_number }}</h2>
+										</div>
+									</div>
+
+                                    {% endfor %}
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+                <!-- Search vehicle form
+                ====================================== -->
+                <div class="col-md-4 col-sm-12 px-0" style="height: 750px">
+                    <div class="card bg-color rounded-0 shadow-sm p-4 h-100">
+                        <div class="card-body">
+                            <h3 style="font-weight: bolder; font-size: xx-large" class="text-white">SEARCH RETAILER:</h3>
+
+                            <form class="mb-0"
+                                  action="{% url 'oldtimers:get_retailers' %}"
+                                  method="GET">
+                                <div class="row">
+                                    <div class="col-12 mt-3">
+                                        <label class="text-white">All Retailers</label>
+                                        <select class="selectpicker form-control customjs" name="retailer" title="Select Retailer"  data-size="7" data-live-search="true" multiple style="width:100%;">
+                                            <optgroup label="All Retailers">
+                                                {% for retailer in retailers_vehicles.keys %}
+                                                <option value="{{ retailer.id }}">{{ retailer.company_name }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <label class="text-white">Select Brand</label>
+                                        <select class="selectpicker form-control customjs" title="Select Brand" name="brand" data-size="7" data-live-search="true" multiple style="width:100%;">
+                                            <optgroup label="All Brands">
+                                            {% for retailer in retailers_vehicles.values %}
+                                                {% for vehicle in retailer %}
+                                                <option>{{ vehicle.brand }}</option>
+                                            {% endfor %}
+                                            {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-3 ui-datepicker-calendar">
+                                        <label class="text-white">Select Year</label>
+                                        <select class="selectpicker form-control customjs" title="Select Year" name="production_year" data-size="7" data-live-search="true" multiple style="width:100%;">
+                                            <optgroup label="Year of manufacture">
+                                            {% for retailer in retailers_vehicles.values %}
+                                                {% for vehicle in retailer %}
+                                                <option>{{ vehicle.production_year }}</option>
+                                            {% endfor %}
+                                            {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-3 dark input-daterange travel-date-group" style="padding-top: 65px">
+                                        <label class="text-white">Price Range</label>
+                                        <input class="price-range" id="price" name="price__range" disabled/>
+                                    </div>
+                                    <div class="col-12 mt-4">
+                                        <button class="button button-3d button-rounded button-white button-light button-large btn-block m-0">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+
+		<!-- Content
+		============================================= -->
+		<section id="content" class="clearfix">
+
+			<div class="content-wrap py-0">
+
+				<div class="section m-0">
+					<div class="container">
+						<div class="row py-5 clearfix">
+							<div class="col-md-4 mb-md-3 mb-5">
+								<div class="feature-box fbox-plain">
+									<div class="fbox-icon">
+										<a href="#"><i class="icon-car-battery"></i></a>
+									</div>
+									<div class="fbox-content">
+										<h3>Long Battery Life</h3>
+										<p>Canvas provides support for Native HTML5 Videos that can be added to a Background.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 mb-md-3 mb-5">
+								<div class="feature-box fbox-plain">
+									<div class="fbox-icon">
+										<a href="#"><i class="icon-car-cogs2"></i></a>
+									</div>
+									<div class="fbox-content">
+										<h3>24x7 Service</h3>
+										<p>Complete control on each &amp; every element that provides endless customization.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 mb-md-3 mb-5">
+								<div class="feature-box fbox-plain">
+									<div class="fbox-icon">
+										<a href="#"><i class="icon-car-pump"></i></a>
+									</div>
+									<div class="fbox-content">
+										<h3>Petrol, Diesel &amp; LPG</h3>
+										<p>Change your Website's Primary Scheme instantly by simply adding the dark class.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 mt-0 mt-md-5">
+								<div class="feature-box fbox-plain">
+									<div class="fbox-icon">
+										<a href="#"><i class="icon-car-meter"></i></a>
+									</div>
+									<div class="fbox-content">
+										<h3>Powerful Dashboard</h3>
+										<p>Canvas provides support for Native HTML5 Videos that can be added to a Background.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 mt-5">
+								<div class="feature-box fbox-plain">
+									<div class="fbox-icon">
+										<a href="#"><i class="icon-car-paint"></i></a>
+									</div>
+									<div class="fbox-content">
+										<h3>Differnt Color Options</h3>
+										<p>Complete control on each &amp; every element that provides endless customization.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 mt-5">
+								<div class="feature-box fbox-plain">
+									<div class="fbox-icon">
+										<a href="#"><i class="icon-car-wheel"></i></a>
+									</div>
+									<div class="fbox-content">
+										<h3>All wheel Drive</h3>
+										<p>Change your Website's Primary Scheme instantly by simply adding the dark class.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="section m-0">
+					<div class="container">
+                        <div class="heading-block mb-4 center">
+							<h2>Search results</h2>
+                        </div>
+
+                        <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
+                            <!-- Car 1 -->
+                            {% for vehicle in sorted_vehicles %}
+                            <article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-sedan">
+                                <div class="grid-inner">
+                                    <div class="portfolio-image">
+                                        <a href="demos/car/car-single.html">
+                                            <img src="{{ vehicle.image.url }}" alt="Open Imagination" >
+                                            <div class="filter-p-pricing">
+                                                <span class="p-price font-weight-bold ls1"><strong>{{ vehicle.price }}</strong> $</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="portfolio-desc">
+                                        <span><a style="font-size: larger">{{ vehicle.retailer.company_name }}</a></span>
+                                        <h3><a href="demos/car/car-single.html">{{ vehicle.production_year}} {{ vehicle.brand }} {{ vehicle.model }}</a></h3>
+                                        <h5><a>{{ vehicle.get_category_display }}</a></h5>
+                                        <span>{{ vehicle.description }}</span>
+                                    </div>
+                                    <div class="row no-gutters car-p-features font-primary clearfix">
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> {{ vehicle.mileage }}</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-door"></i><span> {{ vehicle.seats }}-seater</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel2"></i><span> 20kmpl</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> {{ vehicle.get_transmission_display}}</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-paint" ></i><span style="color:{{ vehicle.color }}">&#9733; &#9733; </span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> {{ vehicle.production_year }}</span></div>
+                                    </div>
+                                </div>
+                            </article>
+                            {% empty %}
+                                <h2>No vehicles found</h2>
+                            {% endfor %}
+                        </div>
+
+
+						<div class="heading-block mb-4 center" style="padding-top: 50px">
+							<h2>Our retailers</h2>
+                        </div>
+
+                            {% for retailer, vehicles in retailers_vehicles.items %}
+                        <div class="w-75">
+                            <h2 class="mb-1">{{ retailer.company_name }}</h2>
+                        </div>
+                        <div id="portfolio" class="portfolio row grid-container gutter-20 col-mb-30" data-layout="fitRows">
+                            <!-- Car 1 -->
+                            {% for vehicle in vehicles %}
+                            <article class="portfolio-item col-12 col-sm-6 col-lg-4 cf-sedan">
+                                <div class="grid-inner">
+                                    <div class="portfolio-image">
+                                        <a href="demos/car/car-single.html">
+                                            <img src="{{ vehicle.image.url }}" alt="Open Imagination" >
+                                            <div class="filter-p-pricing">
+                                                <span class="p-price font-weight-bold ls1"><strong>{{ vehicle.price }}</strong> $</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="portfolio-desc">
+                                        <span><a style="font-size: larger">{{ vehicle.retailer.company_name }}</a></span>
+                                        <h3><a href="demos/car/car-single.html">{{ vehicle.production_year}} {{ vehicle.brand }} {{ vehicle.model }}</a></h3>
+                                        <h5><a>{{ vehicle.get_category_display }}</a></h5>
+                                        <span>{{ vehicle.description }}</span>
+                                    </div>
+                                    <div class="row no-gutters car-p-features font-primary clearfix">
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-meter"></i><span> {{ vehicle.mileage }}</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-door"></i><span> {{ vehicle.seats }}-seater</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-fuel2"></i><span> 20kmpl</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-signal"></i><span> {{ vehicle.get_transmission_display}}</span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-paint" ></i><span style="color:{{ vehicle.color }}">&#9733; &#9733; </span></div>
+                                        <div class="col-lg-4 col-6 p-0"><i class="icon-car-care"></i><span> {{ vehicle.production_year }}</span></div>
+                                    </div>
+                                </div>
+                            </article>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+					</div>
+				</div>
+			</div>
+		</section><!-- #content end -->
+        {% endblock %}
