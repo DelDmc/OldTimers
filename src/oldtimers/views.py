@@ -16,12 +16,13 @@ class IndexView(TemplateView):
     extra_context = "vehicles"
     extra_context_counter = "counter"
     queryset = Vehicle.objects.all()
+    random_vehicles_qty = 6
 
     def get_context_data(self, **kwargs):
         queryset = list(self.queryset)
         shuffle(queryset)
         print(queryset)
-        extra_context = [queryset[i] for i in range(6)]
+        extra_context = [queryset[i] for i in range(self.random_vehicles_qty)]
         extra_context_counter = len(queryset)
         kwargs["vehicles"] = extra_context
         kwargs["counter"] = extra_context_counter
@@ -49,6 +50,8 @@ class RetailerListView(ListView, TemplateResponseMixin):
     queryset = Retailer.objects.all()
     additional_context = "retailers_vehicles"
     search_form_context = "sorted_vehicles"
+    max_vehicle_price = Decimal(50*10**6)
+    min_vehicle_price = 0
 
     vehicle_args = {
         "retailer": fields.Str(required=False),
@@ -56,7 +59,8 @@ class RetailerListView(ListView, TemplateResponseMixin):
         "production_year": fields.Int(
             required=False,
         ),
-        "price__range": fields.Str(required=False),
+        "price_from": fields.Str(required=False),
+        "price_to": fields.Str(required=False),
     }
 
     def get_context_data(self, **kwargs):
@@ -71,18 +75,48 @@ class RetailerListView(ListView, TemplateResponseMixin):
     def get(self, request, parameters, *args, **kwargs):
         self.object_list = self.get_queryset()
         context = self.get_context_data()
-        vehicles = self.get_vehicles(request, parameters)
+        vehicles = self.get_vehicles(parameters)
         context["sorted_vehicles"] = vehicles
         return self.render_to_response(context)
 
-    def get_vehicles(self, request, parameters):
+    def get_price_range(self, parameters):
+        price_from = parameters.get("price_from")
+        price_to = parameters.get("price_to")
+
+        if price_from:
+            price_from = Decimal(int(price_from))
+            if price_to:
+                price_to = Decimal(int(price_to))
+            else:
+                price_to = self.max_vehicle_price
+        else:
+            if price_to:
+                price_from = Decimal(int(price_from))
+                price_to = Decimal(int(price_to))
+            else:
+                price_from = None
+                price_to = None
+
+        if price_from and price_to:
+            price_range = (price_from, price_to)
+            return price_range
+        else:
+            return None
+
+    def get_vehicles(self, parameters):
         """Returns list of sorted vehicles as per data received from parameters"""
+        print(parameters)
         if parameters:
             search_form_context = None
-            price_range = parameters.get("price__range").split(";")
-            parameters["price__range"] = tuple(Decimal(item) for item in price_range)
-            for param_name, param_value in parameters.items():
-                search_form_context = Vehicle.objects.filter(**{param_name: param_value})
+            price_range = self.get_price_range(parameters)
+            parameters.pop("price_from")
+            parameters.pop("price_to")
+
+            if price_range:
+                parameters["price__range"] = price_range
+        print(parameters)
+        for param_name, param_value in parameters.items():
+            search_form_context = Vehicle.objects.filter(**{param_name: param_value})
             return search_form_context
 
 
