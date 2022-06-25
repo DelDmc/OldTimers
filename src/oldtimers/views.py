@@ -50,7 +50,7 @@ class RetailerListView(ListView, TemplateResponseMixin):
     queryset = Retailer.objects.all()
     additional_context = "retailers_vehicles"
     search_form_context = "sorted_vehicles"
-    max_vehicle_price = Decimal(50*10**6)
+    max_vehicle_price = Decimal(50 * 10**6)
     min_vehicle_price = 0
 
     vehicle_args = {
