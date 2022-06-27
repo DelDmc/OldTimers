@@ -155,20 +155,20 @@
 														<div class="widget text-center">
 
 															<h3 class="mb-0">Featured Models</h3>
-															<a href="{% url "oldtimers:get_cars_by_cat" 99 %}" class="button button-small button-rounded button-border button-dark button-black font-primary" style="margin: 10px 0 40px">Show all Cars</a>
+															<a href="{% url 'oldtimers:get_cars_by_cat' 99 %}" class="button button-small button-rounded button-border button-dark button-black font-primary" style="margin: 10px 0 40px">Show all Cars</a>
 
 															<!-- Mega Menu Cars Carousel -->
 															<div class="owl-carousel image-carousel carousel-widget" data-margin="20" data-nav="false" data-pagi="true" data-items-xs="1" data-items-sm="2" data-items-md="4" data-items-lg="6" data-items-xl="6">
-																<div class="oc-item center"><a href="{% url "oldtimers:get_cars_by_cat" 0 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/1-2.png' %}" alt="Car">European Elite Classics</a></div>
-																<div class="oc-item center"><a href="{% url "oldtimers:get_cars_by_cat" 9 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/2-2.png' %}" alt="Car">European Racing Classics</a></div>
-																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 1 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/3-3.png' %}" alt="Car">US Retro</a></div>
-																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 2 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/4-4.png' %}" alt="Car">European Legends</a></div>
-																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 3 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/5-5.png' %}" alt="Car">Fully Restored Oldtimers</a></div>
-																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 4 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/6-1.png' %}" alt="Car">American Muscle Cars</a></div>
-																<div class="oc-item center"><a href="{% url "oldtimers:get_cars_by_cat" 5 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/7-1.png' %}" alt="Car">Classic Offroad</a></div>
-																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 6 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/8-1.png' %}" alt="Car">Asian Legends</a></div>
-																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 7 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/9-1.png' %}" alt="Car">Rare Supercars</a></div>
-																<div class="oc-item center"><a href={% url "oldtimers:get_cars_by_cat" 10 %}><img src="{% static 'oldtimers/demos/car/images/mega-menu/10-1.png' %}" alt="Car">Deep Tuned Customs</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 0 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/1-2.png' %}" alt="Car">European Elite Classics</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 9 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/2-2.png' %}" alt="Car">European Racing Classics</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 1 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/3-3.png' %}" alt="Car">US Retro</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 2 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/4-4.png' %}" alt="Car">European Legends</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 3 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/5-5.png' %}" alt="Car">Fully Restored Oldtimers</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 4 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/6-1.png' %}" alt="Car">American Muscle Cars</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 5 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/7-1.png' %}" alt="Car">Classic Offroad</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 6 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/8-1.png' %}" alt="Car">Asian Legends</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 7 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/9-1.png' %}" alt="Car">Rare Supercars</a></div>
+																<div class="oc-item center"><a href="{% url 'oldtimers:get_cars_by_cat' 10 %}"><img src="{% static 'oldtimers/demos/car/images/mega-menu/10-1.png' %}" alt="Car">Deep Tuned Customs</a></div>
 
 															</div>
 														</div>
@@ -999,7 +999,7 @@
 						</div>
 						<!-- Video 2 -->
 						<div class="col-md-6 col-12 p-0 dark videoplay-on-hover">
-							<a href="demos/car/car-listing.html">
+							<a href="#">
 								<div class="vertical-middle center">
 									<div class="before-heading text-uppercase ls1" style="font-size: 14px; font-style: normal; color: #EEE">Retro</div>
 									<h2 class="mb-0 ls1">Auburn</h2>
@@ -1014,7 +1014,7 @@
 						</div>
 						<!-- Video 3 -->
 						<div class="col-md-6 col-12 p-0 dark videoplay-on-hover">
-							<a href="demos/car/car-listing.html">
+							<a href="#">
 								<div class="vertical-middle center">
 									<div class="before-heading uppercase ls1" style="font-size: 14px; font-style: normal; color: #EEE">Retro Ford</div>
 									<h2 class="mb-0 ls1">Emerald Failrlane 500</h2>
@@ -1029,7 +1029,7 @@
 						</div>
 						<!-- Video 4 -->
 						<div class="col-md-6 col-12 p-0 dark videoplay-on-hover">
-							<a href="demos/car/car-listing.html">
+							<a href="#">
 								<div class="vertical-middle center">
 									<div class="before-heading uppercase ls1" style="font-size: 14px; font-style: normal; color: #EEE">Pontiac</div>
 									<h2 class="mb-0 ls1">Oldschool Pontiac</h2>
@@ -1165,7 +1165,7 @@
 							<h2 class="nott font-weight-medium">Raise Your Heart</h2>
 							<p style="color: #DDD; margin-top: 10px">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse ipsa necessitatibus rem facere perspiciatis neque laborum est, illum commodi sunt, nobis voluptas.</p>
 						</div>
-						<a href="demos/car/car-contact.html" class="uppercase font-weight-bold ls2" style="color: #FFF; font-size: 12px; border-bottom: 1px solid #FFF">Request a Quote</a> &rarr;
+						<a href="#" class="uppercase font-weight-bold ls2" style="color: #FFF; font-size: 12px; border-bottom: 1px solid #FFF">Request a Quote</a> &rarr;
 					</div>
 				</div>
 			</div>

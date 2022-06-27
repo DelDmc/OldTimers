@@ -25,7 +25,8 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("oldtimers/", include("oldtimers.urls")),
     path("accounts/", include("accounts.urls")),
-    # path("api-auth/", include("api.urls")),
     path("", IndexView.as_view(), name="index"),
     path("contacts/", ContactsView.as_view(), name="contacts"),
+    path("api/", include("api.urls")),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ] + static(base.MEDIA_URL, document_root=base.MEDIA_ROOT)
