@@ -21,12 +21,11 @@ from config.settings import base
 from oldtimers.views import ContactsView, IndexView
 
 urlpatterns = [
-
     path("admin/", admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
     path("oldtimers/", include("oldtimers.urls")),
     path("accounts/", include("accounts.urls")),
-    path("api-auth/", include("api.urls")),
+    # path("api-auth/", include("api.urls")),
     path("", IndexView.as_view(), name="index"),
     path("contacts/", ContactsView.as_view(), name="contacts"),
 ] + static(base.MEDIA_URL, document_root=base.MEDIA_ROOT)

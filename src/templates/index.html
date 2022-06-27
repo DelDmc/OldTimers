@@ -592,7 +592,7 @@
 									</li>
 									<li data-index="rs-1481" data-transition="slidefromleft" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off"  data-easein="default" data-easeout="default" data-masterspeed="300"  data-thumb="{% static 'oldtimers/demos/car/images/revslider/3-1-1.png' %}"  data-rotate="0"  data-saveperformance="off"  data-title="Brand New Mustand" data-param1="Sedan" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description="">
 										<!-- MAIN IMAGE -->
-										<img src="{% static 'oldtimers/include/rs-plugin/demos/assets/images/dummy.png' %}" alt="Image"  data-lazyload="{% static 'oldtimers/demos/car/images/revslider/3-1-1.png' %}" data-bgposition="left center" data-bgfit="contain" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina">
+										<img src="{% static 'oldtimers/include/rs-plugin/demos/assets/images/dummy.png' %}" alt="Image"  data-lazyload="{% static 'oldtimers/demos/car/images/revslider/3-1-1.png' %}" data-bgposition="left center" data-bgfit="contain" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
 
 										<!-- LAYER NR. 2 -->
 										<div class="tp-caption font-body ls2 text-uppercase tp-resizeme"
@@ -1333,11 +1333,11 @@
 			$(".price-range").ionRangeSlider({
 				type: "double",
 				grid: true,
-				min: 5000,
+				min: 0,
 				max: 50000000,
-				from: 5000,
+				from: 0,
 				prefix: "$",
-                reset: false,
+                reset: true,
 			});
 		});
 
