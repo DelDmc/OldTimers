@@ -27,12 +27,12 @@ class VehicleViewSet(ModelViewSet):
     serializer_class = VehicleSerializer
 
 
-class CreateVehicleAPIView(CreateAPIView):
+class CreateVehicleView(CreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = VehicleSerializer
 
 
-class RetrieveVehicleAPIView(RetrieveAPIView):
+class RetrieveVehicleView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = VehicleSerializer
     lookup_field = "vin"
@@ -42,7 +42,7 @@ class RetrieveVehicleAPIView(RetrieveAPIView):
         return Vehicle.objects.filter(vin=vin)
 
 
-class DeleteVehicleAPIView(DestroyAPIView):
+class DeleteVehicleView(DestroyAPIView):
     permission_classes = (IsAuthenticated,)
     http_method_names = ["delete"]
     lookup_field = "vin"
@@ -52,7 +52,7 @@ class DeleteVehicleAPIView(DestroyAPIView):
         return Vehicle.objects.filter(vin=vin)
 
 
-class UpdateVehicleAPIView(UpdateAPIView):
+class UpdateVehicleView(UpdateAPIView):
     serializer_class = VehicleSerializer
     permission_classes = (IsAuthenticated,)
     http_method_names = ["patch", "put", "post"]
@@ -63,14 +63,12 @@ class UpdateVehicleAPIView(UpdateAPIView):
         return Vehicle.objects.filter(vin=vin)
 
 
-class RetrieveCustomerVehiclesAPIView(
-    ModelViewSet,
-):
+class RetrieveMyVehiclesView(ModelViewSet):
     serializer_class = VehicleSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        customer = get_user(request=self.request)
+        customer = self.request.user
         if customer.is_owner():
             queryset = Vehicle.objects.filter(owner_id=customer.id)
             if customer.is_retailer():
