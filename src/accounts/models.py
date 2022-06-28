@@ -36,7 +36,9 @@ class Customer(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomerManager()
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = [
+        "username",
+    ]
 
     class Meta:
         verbose_name = _("Customer")
@@ -56,3 +58,21 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def is_owner(self):
+        from oldtimers.models import Vehicle
+
+        vehicles = Vehicle.objects.filter(owner_id=self.id)
+        if vehicles:
+            return True
+        else:
+            return False
+
+    def is_retailer(self):
+        from oldtimers.models import Vehicle
+
+        vehicles = Vehicle.objects.filter(retailer__user_id=self.id)
+        if vehicles:
+            return True
+        else:
+            return False
