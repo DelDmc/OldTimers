@@ -5,10 +5,9 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from api.views import (CreateVehicleView, CustomerViewSet,
-                       DeleteVehicleView, RetrieveMyVehiclesView,
-                       RetrieveVehicleView, UpdateVehicleView,
-                       VehicleViewSet)
+from api.views import (CreateVehicleView, CustomerViewSet, DeleteVehicleView,
+                       RetrieveMyVehiclesView, RetrieveVehicleView,
+                       UpdateVehicleView, VehicleViewSet)
 
 app_name = "api"
 
