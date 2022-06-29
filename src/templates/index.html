@@ -146,7 +146,7 @@
 							<ul class="menu-container">
 								<li class="menu-item current"><a class="menu-link" href="{% url 'index' %}"><div>Home</div></a></li>
 								<!-- Mega Menu -->
-								<li class="menu-item mega-menu"><a class="menu-link" href="{% url "oldtimers:get_cars_by_cat" 99 %}"><div>Car Listing</div></a>
+								<li class="menu-item mega-menu"><a class="menu-link" href="{% url "oldtimers:get_cars_by_cat" 99 %}"><div>Car List</div></a>
 									<div class="mega-menu-content mega-menu-style-2">
 										<div class="container">
 											<div class="row">
@@ -964,6 +964,8 @@
 								</div>
 
 							</article>
+                            {% empty %}
+                            <h3 class="font-weight-bold">No vehicles in our database</h3>
                         {% endfor %}
 							<!-- Car 2 -->
 
