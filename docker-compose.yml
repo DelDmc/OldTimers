@@ -6,12 +6,11 @@ services:
     container_name: oldtimers_container
     working_dir: /oldtimers
 
-
     restart: always
     command:
       - ./commands/start_server.sh
     ports:
-      - 8011:8010
+      - '8011:8010'
 
     volumes:
       - ./src:/oldtimers/src
@@ -24,15 +23,51 @@ services:
   postgres:
     image: postgres:12
     ports:
-      - 5432:5432
+      - '5432:5432'
     volumes:
       - pg_data:/var/lib/postgresql/data
     env_file:
       - .env
-#    environment:
-#      POSTGRES_PASSWORD: admin
-#      POSTGRES_USER: admin
-#      POSTGRES_DB: oldtimers
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '5050:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+  mongodb:
+    container_name: mongo_db_container
+    image: mongo:3-stretch
+    ports:
+      - '27017:27017'
+    command: [ "--bind_ip_all", "--smallfiles" ]
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+    env_file:
+      - .env
+
+  mongoadmin:
+    image: mongo-express
+    restart: always
+    container_name: mongo_admin_container
+    ports:
+      - '8081:8081'
+    env_file:
+      - .env
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
 
 volumes:
   pg_data: { }
+  pgadmin_data: { }
+  mongo_data: { }
