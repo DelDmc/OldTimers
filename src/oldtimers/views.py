@@ -21,13 +21,14 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         queryset = list(self.queryset)
         shuffle(queryset)
-        print(queryset)
-        extra_context = [queryset[i] for i in range(self.random_vehicles_qty)]
-        extra_context_counter = len(queryset)
-        kwargs["vehicles"] = extra_context
-        kwargs["counter"] = extra_context_counter
-        print(kwargs)
-        return kwargs
+        if queryset:
+            extra_context = [queryset[i] for i in range(self.random_vehicles_qty)]
+            extra_context_counter = len(queryset)
+            kwargs["vehicles"] = extra_context
+            kwargs["counter"] = extra_context_counter
+            return kwargs
+        else:
+            return kwargs
 
 
 class CarListingByCategoryView(ListView):
