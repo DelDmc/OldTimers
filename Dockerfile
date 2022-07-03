@@ -12,9 +12,6 @@ COPY requirements.txt ./requirements.txt
 
 RUN python -m pip install --upgrade pip
 RUN pip install -r ./requirements.txt
-RUN chmod +x commands/start_server.sh
+RUN chmod -R 750 ./commands -R
 
-
-CMD ["commands/start_server.sh"]
-
-#CMD ["python", "src/manage.py", "runserver", "0:8008"]
+CMD ["bash"]
