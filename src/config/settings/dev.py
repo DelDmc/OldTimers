@@ -3,8 +3,12 @@ from config.settings.base import *  # noqa:
 DEBUG = True
 
 CURRENT_ENV = "DEV"
-print(CURRENT_ENV)
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATIC_URL = "/static/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 if os.environ.get("GITHUB_WORKFLOW"):
     DATABASES = {
@@ -15,6 +19,13 @@ if os.environ.get("GITHUB_WORKFLOW"):
             "PASSWORD": "postgres",
             "HOST": "127.0.0.1",
             "PORT": "5432",
+        },
+    }
+elif os.environ.get("TEST_DB"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
         },
     }
 else:
@@ -28,17 +39,15 @@ else:
             "PORT": os.environ["POSTGRES_PORT"],
         }
     }
-    #     "default": {
-    #         "ENGINE": "django.db.backends.sqlite3",
-    #         "NAME": BASE_DIR / "db.sqlite3",
-    #     },
-    # }
 
-    # "default": {
-    #         "ENGINE": "django.db.backends.postgresql",
-    #         "NAME": "oldtimers",
-    #         "USER": "admin",
-    #         "PASSWORD": "admin",
-    #         "HOST": "localhost",
-    #         "PORT": "5433",
-    #     },
+# Postgres DB settings for local use
+"""
+    "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "oldtimers",
+            "USER": "admin",
+            "PASSWORD": "admin",
+            "HOST": "localhost",
+            "PORT": "5433",
+        },
+"""

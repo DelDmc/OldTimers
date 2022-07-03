@@ -14,6 +14,8 @@ services:
 
     volumes:
       - ./src:/oldtimers/src
+      - static_content:/oldtimers/src/static
+      - media_content:/oldtimers/src/media
     tty: true
     env_file:
       - .env
@@ -42,7 +44,7 @@ services:
     depends_on:
       - postgres
 
-  mongodb:
+  mongo:
     container_name: mongo_db_container
     image: mongo:3-stretch
     ports:
@@ -59,15 +61,31 @@ services:
     restart: always
     container_name: mongo_admin_container
     ports:
-      - '8081:8081'
+      - '8091:8081'
     env_file:
       - .env
     links:
-      - mongodb
+      - mongo
     depends_on:
-      - mongodb
+      - mongo
+
+  nginx:
+    image: nginx:1.19
+    volumes:
+      - static_content:/oldtimers/src/static
+      - media_content:/oldtimers/src/media
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - '80:80'
+      - '443-443'
+    env_file:
+      - .env
+    depends_on:
+      - backend
 
 volumes:
   pg_data: { }
   pgadmin_data: { }
   mongo_data: { }
+  static_content: { }
+  media_content: { }
