@@ -5,12 +5,11 @@ services:
     build: ./
     container_name: oldtimers_container
     working_dir: /oldtimers
-
     restart: always
     command:
       - ./commands/start_server_${MODE}.sh
     ports:
-      - '8011:8010'
+      - ${LOCAL_PORT}:${WSGI_PORT}
 
     volumes:
       - ./src:/oldtimers/src
@@ -81,6 +80,31 @@ services:
     env_file:
       - .env
     depends_on:
+      - backend
+
+#  rabbitmq:
+#    image: rabbitmq:3.8-management-alpine
+#    env_file:
+#      .env
+#    restart: on-failure
+  redis:
+    image: redis
+    env_file:
+      - .env
+    restart: on-failure
+    depends_on:
+      - backend
+
+  celery:
+    build: ./
+    command: celery -A config worker -l ${CELERY_LOG_LEVEL} -c ${CELERY_NUM_WORKERS}
+    restart: always
+    volumes:
+      - ./src:/oldtimers
+    env_file:
+      - .env
+    depends_on:
+      - redis
       - backend
 
 volumes:

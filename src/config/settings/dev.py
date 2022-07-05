@@ -4,7 +4,12 @@ DEBUG = True
 
 CURRENT_ENV = "DEV"
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    "/usr/local/lib/python3.9/dist-packages/django/contrib/admin/static/admin",
+)
+
 STATIC_URL = "/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -32,22 +37,31 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ["POSTGRES_DB"],
-            "USER": os.environ["POSTGRES_USER"],
-            "PASSWORD": os.environ["POSTGRES_PASSWORD"],
-            "HOST": os.environ["POSTGRES_HOST"],
-            "PORT": os.environ["POSTGRES_PORT"],
-        }
-    }
-
-# Postgres DB settings for local use
-"""
-    "default": {
-            "ENGINE": "django.db.backends.postgresql",
             "NAME": "oldtimers",
             "USER": "admin",
             "PASSWORD": "admin",
             "HOST": "localhost",
             "PORT": "5433",
-        },
-"""
+        }
+    }
+
+    # DATABASES = {
+    #     "default": {
+    #         "ENGINE": "django.db.backends.postgresql",
+    #         "NAME": os.environ["POSTGRES_DB"],
+    #         "USER": os.environ["POSTGRES_USER"],
+    #         "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+    #         "HOST": os.environ["POSTGRES_HOST"],
+    #         "PORT": os.environ["POSTGRES_PORT"],
+    #     }
+    # }
+
+    #     "default": {
+    #             "ENGINE": "django.db.backends.postgresql",
+    #             "NAME": "oldtimers",
+    #             "USER": "admin",
+    #             "PASSWORD": "admin",
+    #             "HOST": "localhost",
+    #             "PORT": "5433",
+    #     }
+    # }

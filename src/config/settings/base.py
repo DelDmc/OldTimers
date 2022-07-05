@@ -28,7 +28,9 @@ SECRET_KEY = "django-insecure-dam202b+3$b3frs&paoonel#1n!jhfvn8#x)ujq=y_00*09*=f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+]
 
 connect(host="mongodb://admin:admin@mongo:27017/mongo_content?authSource=admin")
 
@@ -182,3 +184,11 @@ DJOSER = {
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/{uid}/{token}",
 }
+
+# CELERY_BROKER_URL = f"amqp://{os.environ['CELERY_BROKER_URL']}"
+CELERY_BROKER_URL = "redis://redis"
+CELERY_RESULT_BACKEND = "redis://redis"
+
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_SERIALIZER = "json"

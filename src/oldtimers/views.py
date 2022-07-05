@@ -1,12 +1,15 @@
 from decimal import Decimal
 from random import shuffle
 
+from django.http import HttpResponse
 from django.views.generic import ListView, TemplateView
 from django.views.generic.base import TemplateResponseMixin
 from webargs import fields
 from webargs.djangoparser import use_args
 
 from oldtimers.models import Retailer, Vehicle
+from oldtimers.tasks import (generate_fake_customers, generate_fake_retailers, generate_fake_vehicles,
+                             delete_all_fake_data)
 
 # Create your views here.
 
@@ -121,3 +124,25 @@ class RetailerListView(ListView, TemplateResponseMixin):
 
 class ContactsView(TemplateView):
     template_name = "contacts.html"
+
+
+def fake_customers(request):
+    print(request)
+    generate_fake_customers.delay()
+
+    return HttpResponse("Task started: generate fake customers")
+
+
+def fake_retailers(request):
+    generate_fake_retailers.delay()
+    return HttpResponse("Task started: generate fake retailers")
+
+
+def fake_vehicles(request):
+    generate_fake_vehicles.delay()
+    return HttpResponse("Task started: generate fake vehicles")
+
+
+def delete_fake_data(request):
+    delete_all_fake_data.delay()
+    return HttpResponse("Task started: delete fake data")
