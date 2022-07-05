@@ -1,7 +1,8 @@
 from django.urls import path
 
-from oldtimers.views import (CarListingByCategoryView, RetailerListView, fake_customers, fake_retailers, fake_vehicles,
-                             delete_fake_data)
+from oldtimers.views import (CarListingByCategoryView, RetailerListView,
+                             delete_fake_data, fake_customers, fake_retailers,
+                             fake_vehicles)
 
 app_name = "oldtimers"
 

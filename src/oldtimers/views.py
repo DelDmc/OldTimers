@@ -8,8 +8,8 @@ from webargs import fields
 from webargs.djangoparser import use_args
 
 from oldtimers.models import Retailer, Vehicle
-from oldtimers.tasks import (generate_fake_customers, generate_fake_retailers, generate_fake_vehicles,
-                             delete_all_fake_data)
+from oldtimers.tasks import (delete_all_fake_data, generate_fake_customers,
+                             generate_fake_retailers, generate_fake_vehicles)
 
 # Create your views here.
 
