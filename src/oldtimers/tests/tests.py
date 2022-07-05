@@ -26,7 +26,6 @@ def sample_vehicle(retailer_id, **params):
         "vin": f"{''.join(random.choices(string.ascii_uppercase + string.digits, k=17))}",
         "price": "20000.00",
     }
-
     defaults.update(params)
     test_vehicle = Vehicle.objects.create(retailer_id=retailer_id, **defaults)
     return test_vehicle

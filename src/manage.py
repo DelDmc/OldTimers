@@ -9,6 +9,9 @@ def main():
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
     if sys.argv[1] == "test":
+        os.environ["TEST_DB"] = "test"
+        # print("sys_argv", sys.argv)
+        # print("os.environ", os.environ)
         print("NOTE: Running BLACK formation:")
         BASE_DIR = Path(__file__).resolve().parent.parent
         print(os.popen(f"black --config {BASE_DIR}/.black.toml .").read())

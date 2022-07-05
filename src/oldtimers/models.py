@@ -34,7 +34,7 @@ class Retailer(BaseModel):
         null=False,
         blank=True,
     )
-    photo = models.ImageField(upload_to="users_photo/", null=True, blank=True)
+    photo = models.ImageField(upload_to="users_photo/", null=True, blank=True, default="users_photo/default.jpg")
     service_fee = models.DecimalField(
         max_digits=19,
         decimal_places=2,

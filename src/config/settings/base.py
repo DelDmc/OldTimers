@@ -14,7 +14,7 @@ from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-import mongoengine
+from mongoengine import connect
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -28,11 +28,11 @@ SECRET_KEY = "django-insecure-dam202b+3$b3frs&paoonel#1n!jhfvn8#x)ujq=y_00*09*=f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "localhost",
+]
 
-mongoengine.connect(
-    host="mongodb://admin:admin@mongodb:27017/mongodb_content?authSource=admin"
-)
+connect(host="mongodb://admin:admin@mongo:27017/mongo_content?authSource=admin")
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -60,23 +60,8 @@ INSTALLED_APPS = [
     # "rest_framework.authtoken",
     # "djoser",
     "rest_framework_simplejwt",
+    "mongoblog",
 ]
-
-
-STATIC_ROOT = os.path.join(BASE_DIR, "static/oldtimers")
-
-# STATIC_ROOT = ""
-STATIC_URL = "/static/"
-
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-# print("BASE_DIR: ", BASE_DIR)
-# print("STATIC_ROOT:", STATIC_ROOT)
-# print("STATIC_URL: ", STATIC_URL)
-# print("STATICFILES_DIRS: ", STATICFILES_DIRS)
-
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = "/media/"
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -199,3 +184,11 @@ DJOSER = {
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/{uid}/{token}",
 }
+
+# CELERY_BROKER_URL = f"amqp://{os.environ['CELERY_BROKER_URL']}"
+CELERY_BROKER_URL = "redis://redis"
+CELERY_RESULT_BACKEND = "redis://redis"
+
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_SERIALIZER = "json"
