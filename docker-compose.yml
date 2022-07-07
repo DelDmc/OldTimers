@@ -21,52 +21,52 @@ services:
     depends_on:
       - postgres
 
-  postgres:
-    image: postgres:12
-    ports:
-      - '5432:5432'
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    env_file:
-      - .env
-
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - '5050:80'
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - postgres
-
-  mongo:
-    container_name: mongo_db_container
-    image: mongo:3-stretch
-    ports:
-      - '27017:27017'
-    command: [ "--bind_ip_all", "--smallfiles" ]
-    volumes:
-      - mongo_data:/data/db
-    restart: always
-    env_file:
-      - .env
-
-  mongoadmin:
-    image: mongo-express
-    restart: always
-    container_name: mongo_admin_container
-    ports:
-      - '8091:8081'
-    env_file:
-      - .env
-    links:
-      - mongo
-    depends_on:
-      - mongo
+#  postgres:
+#    image: postgres:12
+#    ports:
+#      - '5432:5432'
+#    volumes:
+#      - pg_data:/var/lib/postgresql/data
+#    env_file:
+#      - .env
+#
+#  pgadmin:
+#    container_name: pgadmin_container
+#    image: dpage/pgadmin4
+#    restart: always
+#    env_file:
+#      - .env
+#    ports:
+#      - '5050:80'
+#    volumes:
+#      - pgadmin_data:/var/lib/pgadmin
+#    depends_on:
+#      - postgres
+#
+#  mongo:
+#    container_name: mongo_db_container
+#    image: mongo:3-stretch
+#    ports:
+#      - '27017:27017'
+#    command: [ "--bind_ip_all", "--smallfiles" ]
+#    volumes:
+#      - mongo_data:/data/db
+#    restart: always
+#    env_file:
+#      - .env
+#
+#  mongoadmin:
+#    image: mongo-express
+#    restart: always
+#    container_name: mongo_admin_container
+#    ports:
+#      - '8091:8081'
+#    env_file:
+#      - .env
+#    links:
+#      - mongo
+#    depends_on:
+#      - mongo
 
   nginx:
     image: nginx:1.19
@@ -87,29 +87,29 @@ services:
 #    env_file:
 #      .env
 #    restart: on-failure
-  redis:
-    image: redis
-    env_file:
-      - .env
-    restart: on-failure
-    depends_on:
-      - backend
-
-  celery:
-    build: ./
-    command: celery -A config worker -l ${CELERY_LOG_LEVEL} -c ${CELERY_NUM_WORKERS}
-    restart: always
-    volumes:
-      - ./src:/oldtimers
-    env_file:
-      - .env
-    depends_on:
-      - redis
-      - backend
+#  redis:
+#    image: redis
+#    env_file:
+#      - .env
+#    restart: on-failure
+#    depends_on:
+#      - backend
+#
+#  celery:
+#    build: ./
+#    command: celery -A config worker -l ${CELERY_LOG_LEVEL} -c ${CELERY_NUM_WORKERS}
+#    restart: always
+#    volumes:
+#      - ./src:/oldtimers
+#    env_file:
+#      - .env
+#    depends_on:
+#      - redis
+#      - backend
 
 volumes:
-  pg_data: { }
-  pgadmin_data: { }
-  mongo_data: { }
+#  pg_data: { }
+#  pgadmin_data: { }
+#  mongo_data: { }
   static_content: { }
   media_content: { }
